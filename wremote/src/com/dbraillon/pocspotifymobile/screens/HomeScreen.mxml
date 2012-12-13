@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		title="Spotify"
+		preinitialize="view_preinitializeHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.dbraillon.pocspotifymobile.models.IconItem;
+			
+			import mx.collections.ArrayList;
+			import mx.events.FlexEvent;
+			
+			
+			private var _data:ArrayList;
+			
+			protected function view_preinitializeHandler(event:FlexEvent):void
+			{
+				_data = new ArrayList();
+				
+				var playlistItem:IconItem = new IconItem("Playlists", "", "assets/playlists.png", "");
+				var starredItem:IconItem = new IconItem("Starred", "", "assets/starred.png", "");
+				var whatsNewItem:IconItem = new IconItem("What's New", "", "assets/toplist.png", "");
+				var accountItem:IconItem = new IconItem("Account", "", "assets/account.png", "");
+				var searchItem:IconItem = new IconItem("Search", "", "assets/search.png", "");
+				var playingItem:IconItem = new IconItem("Playing", "", "assets/queue.png", "");
+				
+				_data.addItem(playlistItem);
+				_data.addItem(starredItem);
+				_data.addItem(whatsNewItem);
+				_data.addItem(accountItem);
+				_data.addItem(searchItem);
+				_data.addItem(playingItem);
+			}
+			
+			protected function menuList_clickHandler(event:MouseEvent):void
+			{
+				if(menuList.selectedIndex != -1)
+				{
+					var selectedItem:IconItem = event.currentTarget.dataProvider.source[menuList.selectedIndex];
+					
+					switch(selectedItem.label)
+					{
+						case "Playlists":
+							break;
+						case "Starred":
+							break;
+						case "What's New":
+							break;
+						case "Account":
+							break;
+						case "Search":
+							navigator.pushView(SearchScreen);
+							break;
+						case "Playing":
+							//navigator.pushView(PlayingScreen);
+							break;
+					}
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:List id="menuList"
+			height="100%" width="100%"
+			itemRenderer="com.dbraillon.pocspotifymobile.renderers.IconItemRenderer"
+			dataProvider="{_data}"
+			click="menuList_clickHandler(event)">
+		
+	</s:List>
+	
+</s:View>

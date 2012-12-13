@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" title="Recherche"
+		preinitialize="search_preinitializeHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.dbraillon.pocspotifymobile.connections.BridgeConnection;
+			
+			import mx.collections.XMLListCollection;
+			import mx.events.FlexEvent;
+			
+			[Bindable]
+			private var _data:XML;
+			private var _connection:BridgeConnection;
+			
+			protected function search_preinitializeHandler(event:FlexEvent):void
+			{
+				_data = new XML();
+				
+				addEventListener(BridgeConnection.RESPONSE_SEARCH_EVENT, onResponse);
+				_connection = BridgeConnection.getInstance();
+				_connection.addEventDispatcher(this);
+			}
+			
+			protected function searchButton_clickHandler(event:MouseEvent):void
+			{
+				var search:String = searchContent.text;
+				
+				if(search != null && search != "")
+				{
+					_connection.sendSearchRequest(search);
+				}
+			}
+			
+			protected function onResponse(event:Event):void
+			{
+				var s:String = _connection._r;
+				s = s.replace("</results><results>");
+				_data = new XML(s);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	
+	<s:VGroup width="100%" height="100%">
+		<s:HGroup width="100%">
+			<s:TextInput id="searchContent" width="80%" prompt="Rechercher une musique, un artiste, un album..."/>
+			<s:Button width="20%" label="Rechercher" click="searchButton_clickHandler(event)"/>	
+		</s:HGroup>
+		<s:DataGrid id="datagridSearch" width="100%" height="100%" verticalScrollPolicy="auto" horizontalScrollPolicy="auto" dataProvider="{new XMLListCollection(XMLList(_data.result))}">
+			<s:columns>
+				<s:ArrayList>
+					<s:GridColumn dataField="uri" headerText="Uri" visible="false"/>
+					<s:GridColumn dataField="track" headerText="Titre"/>
+					<s:GridColumn dataField="artist" headerText="Artiste"/>
+					<s:GridColumn dataField="time" headerText="Durée"/>
+					<s:GridColumn dataField="album" headerText="Album"/>
+				</s:ArrayList>
+			</s:columns>
+		</s:DataGrid>
+	</s:VGroup>
+	
+</s:View>
