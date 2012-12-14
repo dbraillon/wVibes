@@ -2,8 +2,7 @@ package com.dbraillon.pocspotifymobile.connections
 {
 	import com.dbraillon.pocspotifymobile.AddressManager;
 	import com.dbraillon.pocspotifymobile.Command;
-	import com.dbraillon.pocspotifymobile.Connection;
-	import com.dbraillon.pocspotifymobile.events.ResponseEvent;
+	import com.dbraillon.pocspotifymobile.events.DataReceivedEvent;
 	
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -23,25 +22,28 @@ package com.dbraillon.pocspotifymobile.connections
 			return _instance;
 		}
 		
+		// nom des evenements possibles
 		
-		public static var BEGIN_LOCAL_SEARCH_EVENT : String = "begin_local_search_event";
-		public static var NOTFOUND_LOCAL_SEARCH_EVENT : String = "notfound_local_search_event";
-		public static var FOUND_LOCAL_SEARCH_EVENT : String = "found_local_search_event";
+			// evenements de connexion
+			public static var BEGIN_LOCAL_SEARCH_EVENT		: String = "begin_local_search_event";
+			public static var NOTFOUND_LOCAL_SEARCH_EVENT	: String = "notfound_local_search_event";
+			public static var FOUND_LOCAL_SEARCH_EVENT		: String = "found_local_search_event";
+			public static var BEGIN_BASIC_SEARCH_EVENT		: String = "begin_basic_search_event";
+			public static var NOTFOUND_BASIC_SEARCH_EVENT	: String = "notfound_basic_search_event";
+			public static var FOUND_BASIC_SEARCH_EVENT		: String = "found_basic_search_event";
+			public static var BEGIN_CUSTOM_SEARCH_EVENT		: String = "begin_custom_search_event";
+			public static var NOTFOUND_CUSTOM_SEARCH_EVENT	: String = "notfound_custom_search_event";
+			public static var FOUND_CUSTOM_SEARCH_EVENT		: String = "found_custom_search_event";
+			public static var CONNECTION_LOST_EVENT 		: String = "connection_lost_event";
+			
+			// evenements de donnees recu
+			public static var DATA_RECEIVED_EVENT : String = "response_search_event";
+			
+			// type de donnees recu
+			public static var SEARCH_RESULT_BEGIN_DATA : String = "<results>";
+			public static var SEARCH_RESULT_END_DATA   : String = "</results>";
 		
-		public static var BEGIN_BASIC_SEARCH_EVENT : String = "begin_basic_search_event";
-		public static var NOTFOUND_BASIC_SEARCH_EVENT : String = "notfound_basic_search_event";
-		public static var FOUND_BASIC_SEARCH_EVENT : String = "found_basic_search_event";
-		
-		public static var BEGIN_CUSTOM_SEARCH_EVENT : String = "begin_custom_search_event";
-		public static var NOTFOUND_CUSTOM_SEARCH_EVENT : String = "notfound_custom_search_event";
-		public static var FOUND_CUSTOM_SEARCH_EVENT : String = "found_custom_search_event";
-		
-		public static var RESPONSE_SEARCH_EVENT : String = "response_search_event";
-
-		public static var SEARCH_RESULT_BEGIN_RESPONSE : String = "<results>";
-		public static var SEARCH_RESULT_END_RESPONSE : String = "</results>";
-		
-		public static var CONNECTION_LOST : String = "connection_lost";
+		// --->
 		
 		
 		private var _isConnected:Boolean;
@@ -74,23 +76,23 @@ package com.dbraillon.pocspotifymobile.connections
 			_parentsEventDispatcher.push(parentEventDispatcher);
 			_connection = new Connection(this);
 			
-			addEventListener(Connection.RESPONSE_EVENT, onResponse);
-			addEventListener(Connection.CONNECTION_LOST, onConnectionLost);
+			// ajout des evenements
+			addEventListener(Connection.DATA_RECEIVED_EVENT, onDataReceived);
+			addEventListener(Connection.CONNECTION_LOST_EVENT, onConnectionLost);
 			addEventListener(Connection.ERROR_EVENT, onConnectionLost);
-		}
-		
-		protected function onConnectionLost(event:Event):void
-		{
-			parentsDispatchEvent(new Event(CONNECTION_LOST));
 		}
 		
 		public function addEventDispatcher(parentEventDispatcher:EventDispatcher):void
 		{
+			// ajout d'un propagateur d'evenement
+			
 			_parentsEventDispatcher.push(parentEventDispatcher);
 		}
 		
-		public function parentsDispatchEvent(event:Event):void
+		private function parentsDispatchEvent(event:Event):void
 		{
+			// disperse l'evenement à tous les propagateurs
+			
 			var length:int = _parentsEventDispatcher.length;
 			for(var i:int = 0; i < length; i++)
 			{
@@ -99,22 +101,22 @@ package com.dbraillon.pocspotifymobile.connections
 			}
 		}
 		
-		protected function onResponse(event:ResponseEvent):void
+		protected function onDataReceived(event:DataReceivedEvent):void
 		{
-			var response:String = event.response;
+			var data:String = event.data;
 			
-			if(isNewPacket(response))
+			if(isNewPacket(data))
 			{
-				_responseBuffer = response;
+				_responseBuffer = data;
 			}
 			else
 			{
-				_responseBuffer = _responseBuffer.concat(response);
-				if(isEndPacket(response))
+				_responseBuffer = _responseBuffer.concat(data);
+				if(isEndPacket(data))
 				{
-					var responseEvent:ResponseEvent = new ResponseEvent(RESPONSE_SEARCH_EVENT);
-					responseEvent.response = _responseBuffer;
-					responseEvent.responseType = _currentResponseType;
+					var responseEvent:DataReceivedEvent = new DataReceivedEvent(DATA_RECEIVED_EVENT);
+					responseEvent.data = _responseBuffer;
+					responseEvent.dataType = _currentResponseType;
 					
 					parentsDispatchEvent(responseEvent);
 					
@@ -126,9 +128,9 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		private function isNewPacket(response:String):Boolean
 		{
-			if(response.indexOf(SEARCH_RESULT_BEGIN_RESPONSE) >= 0)
+			if(response.indexOf(SEARCH_RESULT_BEGIN_DATA) >= 0)
 			{
-				_currentResponseType = SEARCH_RESULT_BEGIN_RESPONSE;
+				_currentResponseType = SEARCH_RESULT_BEGIN_DATA;
 				return true;
 			}
 			
@@ -137,9 +139,9 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		private function isEndPacket(response:String):Boolean
 		{
-			if(_currentResponseType == SEARCH_RESULT_BEGIN_RESPONSE)
+			if(_currentResponseType == SEARCH_RESULT_BEGIN_DATA)
 			{
-				if(response.indexOf(SEARCH_RESULT_END_RESPONSE) >= 0)
+				if(response.indexOf(SEARCH_RESULT_END_DATA) >= 0)
 				{
 					return true;
 				}
@@ -147,6 +149,17 @@ package com.dbraillon.pocspotifymobile.connections
 			
 			return false;
 		}
+		
+		protected function onConnectionLost(event:Event):void
+		{
+			parentsDispatchEvent(new Event(CONNECTION_LOST_EVENT));
+		}
+		
+		
+		
+		
+		
+		
 		
 		// recherche d'une configuration locale
 		public function searchLocalConfiguration():void
@@ -163,7 +176,7 @@ package com.dbraillon.pocspotifymobile.connections
 			if(tempAddress != null)
 			{
 				// si il y a bien une address on tente de se connecter dessus
-				addEventListener(Connection.CONNECT_EVENT, localConnectionConnectedHandler);
+				addEventListener(Connection.CONNECTED_EVENT, localConnectionConnectedHandler);
 				addEventListener(Connection.ERROR_EVENT, localConnectionErrorHandler);
 				
 				_connection.connect(tempAddress, _port);
@@ -179,7 +192,7 @@ package com.dbraillon.pocspotifymobile.connections
 		{
 			// une erreur est survenu, la recherche locale a échoué
 			
-			removeEventListener(Connection.CONNECT_EVENT, localConnectionConnectedHandler);
+			removeEventListener(Connection.CONNECTED_EVENT, localConnectionConnectedHandler);
 			removeEventListener(Connection.ERROR_EVENT, localConnectionErrorHandler);
 			
 			parentsDispatchEvent(new Event(NOTFOUND_LOCAL_SEARCH_EVENT));
@@ -190,7 +203,7 @@ package com.dbraillon.pocspotifymobile.connections
 			// la connexion est établie
 			_isConnected = true;
 			
-			removeEventListener(Connection.CONNECT_EVENT, localConnectionConnectedHandler);
+			removeEventListener(Connection.CONNECTED_EVENT, localConnectionConnectedHandler);
 			removeEventListener(Connection.ERROR_EVENT, localConnectionErrorHandler);
 			
 			parentsDispatchEvent(new Event(FOUND_LOCAL_SEARCH_EVENT));
@@ -212,7 +225,7 @@ package com.dbraillon.pocspotifymobile.connections
 			parentsDispatchEvent(new Event(BEGIN_BASIC_SEARCH_EVENT));
 			
 			
-			addEventListener(Connection.CONNECT_EVENT, basicConnectionConnectedHandler);
+			addEventListener(Connection.CONNECTED_EVENT, basicConnectionConnectedHandler);
 			addEventListener(Connection.ERROR_EVENT, basicConnectionErrorHandler);
 			
 			_connection.connect(_address, _port);
@@ -223,7 +236,7 @@ package com.dbraillon.pocspotifymobile.connections
 			// une erreur est survenu, la recherche basic a échoué
 			trace("Bridge error");
 			
-			removeEventListener(Connection.CONNECT_EVENT, basicConnectionConnectedHandler);
+			removeEventListener(Connection.CONNECTED_EVENT, basicConnectionConnectedHandler);
 			removeEventListener(Connection.ERROR_EVENT, basicConnectionErrorHandler);
 			
 			var address:String = _addressManager.nextAddress();
@@ -242,7 +255,7 @@ package com.dbraillon.pocspotifymobile.connections
 			// la connexion est établie
 			_isConnected = true;
 			
-			removeEventListener(Connection.CONNECT_EVENT, basicConnectionConnectedHandler);
+			removeEventListener(Connection.CONNECTED_EVENT, basicConnectionConnectedHandler);
 			removeEventListener(Connection.ERROR_EVENT, basicConnectionErrorHandler);
 			
 			addLocalConnection();
@@ -256,7 +269,7 @@ package com.dbraillon.pocspotifymobile.connections
 		{
 			_address = address;
 			
-			addEventListener(Connection.CONNECT_EVENT, customConnectionConnectedHandler);
+			addEventListener(Connection.CONNECTED_EVENT, customConnectionConnectedHandler);
 			addEventListener(Connection.ERROR_EVENT, customConnectionErrorHandler);
 			
 			parentsDispatchEvent(new Event(BridgeConnection.BEGIN_CUSTOM_SEARCH_EVENT));
@@ -266,7 +279,7 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		protected function customConnectionErrorHandler(event:Event):void
 		{
-			removeEventListener(Connection.CONNECT_EVENT, customConnectionConnectedHandler);
+			removeEventListener(Connection.CONNECTED_EVENT, customConnectionConnectedHandler);
 			removeEventListener(Connection.ERROR_EVENT, customConnectionErrorHandler);
 			
 			parentsDispatchEvent(new Event(BridgeConnection.NOTFOUND_CUSTOM_SEARCH_EVENT));
@@ -276,7 +289,7 @@ package com.dbraillon.pocspotifymobile.connections
 		{
 			_isConnected = true;
 			
-			removeEventListener(Connection.CONNECT_EVENT, customConnectionConnectedHandler);
+			removeEventListener(Connection.CONNECTED_EVENT, customConnectionConnectedHandler);
 			removeEventListener(Connection.ERROR_EVENT, customConnectionErrorHandler);
 			
 			addLocalConnection();

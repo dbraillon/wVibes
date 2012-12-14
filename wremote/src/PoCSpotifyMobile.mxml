@@ -8,7 +8,7 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import com.dbraillon.pocspotifymobile.Connection;
+			import com.dbraillon.pocspotifymobile.connections.Connection;
 			import com.dbraillon.pocspotifymobile.connections.BridgeConnection;
 			import com.dbraillon.pocspotifymobile.screens.BridgeConfigurationScreen;
 			import com.dbraillon.pocspotifymobile.screens.HomeScreen;
@@ -29,7 +29,7 @@
 				addEventListener(BridgeConnection.NOTFOUND_LOCAL_SEARCH_EVENT, onNotFoundLocalSearch);
 				addEventListener(BridgeConnection.FOUND_LOCAL_SEARCH_EVENT, onFoundLocalSearch);
 				
-				addEventListener(BridgeConnection.CONNECTION_LOST, onConnectionLost);
+				addEventListener(BridgeConnection.CONNECTION_LOST_EVENT, onConnectionLost);
 				
 				// instanciation de la connexion au bridge
 				_bridgeConnection = new BridgeConnection(this);

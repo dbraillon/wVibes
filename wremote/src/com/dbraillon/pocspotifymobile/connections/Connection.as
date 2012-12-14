@@ -1,6 +1,6 @@
-package com.dbraillon.pocspotifymobile
+package com.dbraillon.pocspotifymobile.connections
 {
-	import com.dbraillon.pocspotifymobile.events.ResponseEvent;
+	import com.dbraillon.pocspotifymobile.events.DataReceivedEvent;
 	
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -9,16 +9,20 @@ package com.dbraillon.pocspotifymobile
 	import flash.events.SecurityErrorEvent;
 	import flash.net.DatagramSocket;
 	import flash.net.Socket;
+	import com.dbraillon.pocspotifymobile.Command;
 
 	public class Connection
 	{
-		// nom des évenements possibles
-		public static var CONNECT_EVENT  : String = "connect_event";
-		public static var ERROR_EVENT    : String = "error_event";
-		public static var RESPONSE_EVENT : String = "response_event";
-		public static var CONNECTION_LOST : String = "connection_lost";
+		// nom des evenements possibles
+		public static var CONNECTED_EVENT		: String = "connected_event";
+		public static var ERROR_EVENT			: String = "error_event";
+		public static var DATA_RECEIVED_EVENT	: String = "data_received_event";
+		public static var CONNECTION_LOST_EVENT : String = "connection_lost_event";
 		
+		// socket de connection
 		private var _connectionSocket:Socket;
+		
+		// propagateur d'evenement
 		private var _parentEventDispatcher:EventDispatcher;
 		
 		
@@ -38,13 +42,13 @@ package com.dbraillon.pocspotifymobile
 			
 			// construction de la nouvelle connexion
 			_connectionSocket = new Socket();
-			
-			_connectionSocket.addEventListener(Event.CONNECT, onConnect);
-			_connectionSocket.addEventListener(Event.CLOSE, onClose);
+
+			_connectionSocket.addEventListener(Event.CONNECT, onConnected);
+			_connectionSocket.addEventListener(ProgressEvent.SOCKET_DATA, onDataReceived);
+			_connectionSocket.addEventListener(Event.CLOSE, onClosed);
 			_connectionSocket.addEventListener(IOErrorEvent.IO_ERROR, onError);
-			_connectionSocket.addEventListener(ProgressEvent.SOCKET_DATA, onResponse);
 			_connectionSocket.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecError);
-		
+
 			_connectionSocket.connect(address, port);
 		}
 		
@@ -54,59 +58,65 @@ package com.dbraillon.pocspotifymobile
 			
 			trace("Connection failed : Security error");
 			closeSocket();
-			
+
 			_parentEventDispatcher.dispatchEvent(new Event(Connection.ERROR_EVENT));
 		}
 		
 		protected function onError(event:IOErrorEvent):void
 		{
 			// une erreur IO est survenu, la connexion se ferme et on envoie un evenement
-			
+
 			trace("Connection failed : IO error");
 			closeSocket();
-			
+
 			_parentEventDispatcher.dispatchEvent(new Event(Connection.ERROR_EVENT));
 		}
 		
-		protected function onConnect(event:Event):void
+		protected function onConnected(event:Event):void
 		{
 			// la connexion a réussi, on envoie un evenement
 			
 			trace("Connected to " + _connectionSocket.remoteAddress);
-			_parentEventDispatcher.dispatchEvent(new Event(Connection.CONNECT_EVENT));
 			
+			_parentEventDispatcher.dispatchEvent(new Event(Connection.CONNECTED_EVENT));
 		}
 		
-		protected function onResponse(event:ProgressEvent):void
+		protected function onDataReceived(event:ProgressEvent):void
 		{
-			trace("Getting a response from " + _connectionSocket.remoteAddress + "...");
+			// le client distant envoie des donnees
+			
+			trace("Getting data from " + _connectionSocket.remoteAddress + "...");
 			
 			// construction de la réponse
-			var response:String = "";
+			var data:String = "";
 			while(_connectionSocket.bytesAvailable) {
 			
-				response = response.concat(_connectionSocket.readUTFBytes(_connectionSocket.bytesAvailable));
+				data = data.concat(_connectionSocket.readUTFBytes(_connectionSocket.bytesAvailable));
 			}
 			
-			var responseEvent:ResponseEvent = new ResponseEvent(RESPONSE_EVENT);
-			responseEvent.response = response;
+			// envoi d'un evenement au propagateur d'evenement contenant les données reçu
+			var dataReceivedEvent:DataReceivedEvent = new DataReceivedEvent(DATA_RECEIVED_EVENT);
+			dataReceivedEvent.data = data;
 			
-			_parentEventDispatcher.dispatchEvent(responseEvent);
+			_parentEventDispatcher.dispatchEvent(dataReceivedEvent);
 			
 		}
 		
-		protected function onClose(event:Event):void
+		protected function onClosed(event:Event):void
 		{
+			// le client distant a fermé la connexion
+			
 			trace("Connection closed");
 			closeSocket();
 			
-			_parentEventDispatcher.dispatchEvent(new Event(CONNECTION_LOST));
+			_parentEventDispatcher.dispatchEvent(new Event(CONNECTION_LOST_EVENT));
 		}
-		
 		
 		
 		public function sendCommand(command:Command):void
 		{
+			// envoi une commande au client distant
+			
 			var commandString:String = command.toString();
 			
 			trace("Send command : " + commandString);
@@ -117,14 +127,12 @@ package com.dbraillon.pocspotifymobile
 		
 		private function closeSocket():void 
 		{
-			trace("Close socket");
-			
 			if(_connectionSocket != null) 
 			{
-				_connectionSocket.removeEventListener(Event.CLOSE, onClose);
-				_connectionSocket.removeEventListener(Event.CONNECT, onConnect);
+				_connectionSocket.removeEventListener(Event.CLOSE, onClosed);
+				_connectionSocket.removeEventListener(Event.CONNECT, onConnected);
 				_connectionSocket.removeEventListener(IOErrorEvent.IO_ERROR, onError);
-				_connectionSocket.removeEventListener(ProgressEvent.SOCKET_DATA, onResponse);
+				_connectionSocket.removeEventListener(ProgressEvent.SOCKET_DATA, onDataReceived);
 				_connectionSocket.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecError);
 				
 				if(_connectionSocket.connected)
@@ -134,6 +142,8 @@ package com.dbraillon.pocspotifymobile
 				
 				_connectionSocket = null;	
 			}
+			
+			trace("Socket closed");
 		}
 	}
 }

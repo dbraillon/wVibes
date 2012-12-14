@@ -6,7 +6,7 @@
 	<fx:Script>
 		<![CDATA[
 			import com.dbraillon.pocspotifymobile.connections.BridgeConnection;
-			import com.dbraillon.pocspotifymobile.events.ResponseEvent;
+			import com.dbraillon.pocspotifymobile.events.DataReceivedEvent;
 			
 			import mx.collections.XMLListCollection;
 			import mx.events.FlexEvent;
@@ -21,7 +21,7 @@
 			{
 				_data = new XML();
 				
-				addEventListener(BridgeConnection.RESPONSE_SEARCH_EVENT, onResponse);
+				addEventListener(BridgeConnection.DATA_RECEIVED_EVENT, onResponse);
 				_connection = BridgeConnection.getInstance();
 				_connection.addEventDispatcher(this);
 			}
@@ -36,12 +36,12 @@
 				}
 			}
 			
-			protected function onResponse(event:ResponseEvent):void
+			protected function onResponse(event:DataReceivedEvent):void
 			{
-				if(event.responseType == BridgeConnection.SEARCH_RESULT_BEGIN_RESPONSE)
+				if(event.dataType == BridgeConnection.SEARCH_RESULT_BEGIN_DATA)
 				{
-					var response:String = event.response;
-					response = response.replace(BridgeConnection.SEARCH_RESULT_END_RESPONSE + BridgeConnection.SEARCH_RESULT_BEGIN_RESPONSE);
+					var response:String = event.data;
+					response = response.replace(BridgeConnection.SEARCH_RESULT_END_DATA + BridgeConnection.SEARCH_RESULT_BEGIN_DATA);
 					
 					_data = new XML(response);
 				}

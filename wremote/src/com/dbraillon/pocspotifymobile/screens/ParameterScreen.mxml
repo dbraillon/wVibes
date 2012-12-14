@@ -5,7 +5,7 @@
 	<fx:Script>
 		<![CDATA[
 			import com.dbraillon.pocspotifymobile.Commands;
-			import com.dbraillon.pocspotifymobile.Connection;
+			import com.dbraillon.pocspotifymobile.connections.Connection;
 			
 			protected function button1_clickHandler(event:MouseEvent):void
 			{
