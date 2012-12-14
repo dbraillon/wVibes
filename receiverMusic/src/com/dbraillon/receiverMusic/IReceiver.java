@@ -4,5 +4,5 @@ import java.io.ByteArrayOutputStream;
 
 public interface IReceiver {
 
-	public ByteArrayOutputStream get();
+	public byte[] get();
 }

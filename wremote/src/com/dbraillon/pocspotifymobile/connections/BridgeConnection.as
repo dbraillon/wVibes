@@ -3,6 +3,7 @@ package com.dbraillon.pocspotifymobile.connections
 	import com.dbraillon.pocspotifymobile.AddressManager;
 	import com.dbraillon.pocspotifymobile.Command;
 	import com.dbraillon.pocspotifymobile.Connection;
+	import com.dbraillon.pocspotifymobile.events.ResponseEvent;
 	
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -37,6 +38,12 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		public static var RESPONSE_SEARCH_EVENT : String = "response_search_event";
 
+		public static var SEARCH_RESULT_BEGIN_RESPONSE : String = "<results>";
+		public static var SEARCH_RESULT_END_RESPONSE : String = "</results>";
+		
+		public static var CONNECTION_LOST : String = "connection_lost";
+		
+		
 		private var _isConnected:Boolean;
 		private var _address:String = "";
 		private var _port:int = 1338;
@@ -44,6 +51,10 @@ package com.dbraillon.pocspotifymobile.connections
 		private var _parentsEventDispatcher:Array;
 		private var _connection:Connection;
 		private var _addressManager:AddressManager;
+		
+		private var _isBuildingResponse:Boolean;
+		private var _currentResponseType:String;
+		private var _responseBuffer:String;
 		
 		public function BridgeConnection(parentEventDispatcher:EventDispatcher)
 		{
@@ -54,19 +65,23 @@ package com.dbraillon.pocspotifymobile.connections
 			
 			_instance = this;
 			
+			_isBuildingResponse = false;
+			_currentResponseType = "";
+			_responseBuffer = "";
+			
 			_isConnected = false;
 			_parentsEventDispatcher = new Array();
 			_parentsEventDispatcher.push(parentEventDispatcher);
 			_connection = new Connection(this);
 			
 			addEventListener(Connection.RESPONSE_EVENT, onResponse);
+			addEventListener(Connection.CONNECTION_LOST, onConnectionLost);
+			addEventListener(Connection.ERROR_EVENT, onConnectionLost);
 		}
 		
-		public var _r:String;
-		protected function onResponse(event:Event):void
+		protected function onConnectionLost(event:Event):void
 		{
-			_r = _connection._s;
-			parentsDispatchEvent(new Event(BridgeConnection.RESPONSE_SEARCH_EVENT));
+			parentsDispatchEvent(new Event(CONNECTION_LOST));
 		}
 		
 		public function addEventDispatcher(parentEventDispatcher:EventDispatcher):void
@@ -82,6 +97,55 @@ package com.dbraillon.pocspotifymobile.connections
 				var eventDispatcher:EventDispatcher = _parentsEventDispatcher[i];
 				eventDispatcher.dispatchEvent(event);
 			}
+		}
+		
+		protected function onResponse(event:ResponseEvent):void
+		{
+			var response:String = event.response;
+			
+			if(isNewPacket(response))
+			{
+				_responseBuffer = response;
+			}
+			else
+			{
+				_responseBuffer = _responseBuffer.concat(response);
+				if(isEndPacket(response))
+				{
+					var responseEvent:ResponseEvent = new ResponseEvent(RESPONSE_SEARCH_EVENT);
+					responseEvent.response = _responseBuffer;
+					responseEvent.responseType = _currentResponseType;
+					
+					parentsDispatchEvent(responseEvent);
+					
+					_responseBuffer = "";
+					_currentResponseType = "";
+				}
+			}
+		}
+		
+		private function isNewPacket(response:String):Boolean
+		{
+			if(response.indexOf(SEARCH_RESULT_BEGIN_RESPONSE) >= 0)
+			{
+				_currentResponseType = SEARCH_RESULT_BEGIN_RESPONSE;
+				return true;
+			}
+			
+			return false;
+		}
+		
+		private function isEndPacket(response:String):Boolean
+		{
+			if(_currentResponseType == SEARCH_RESULT_BEGIN_RESPONSE)
+			{
+				if(response.indexOf(SEARCH_RESULT_END_RESPONSE) >= 0)
+				{
+					return true;
+				}
+			}
+			
+			return false;
 		}
 		
 		// recherche d'une configuration locale
@@ -235,6 +299,20 @@ package com.dbraillon.pocspotifymobile.connections
 			array.push(searchContent);
 			
 			var command:Command = new Command(Command.SEARCH_RECIPIENT, Command.BASIC_METHOD, array);
+			_connection.sendCommand(command);
+		}
+		
+		public function sendStartMusic(uri:String):void
+		{
+			var command:Command = new Command(Command.PLAYER_RECIPIENT, Command.LOAD_METHOD, new Array(uri));
+			_connection.sendCommand(command);
+			
+			for(var i:int = 0; i<100; i++)
+			{
+				trace("wait...");
+			}
+			
+			command = new Command(Command.PLAYER_RECIPIENT, Command.PLAY_METHOD, new Array());
 			_connection.sendCommand(command);
 		}
 		

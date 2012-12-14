@@ -10,6 +10,7 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioFormat.Encoding;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -20,7 +21,7 @@ public class Sender {
 		MulticastSocket socket = new MulticastSocket();
 		InetAddress address = InetAddress.getByName("224.2.2.2");
 		
-		String path = "C:\\_perso\\_workspaces\\_java\\senderMusic\\assets\\music.wav";
+		String path = "C:\\_perso\\_workspaces\\_java\\wmusic\\senderMusic\\assets\\music.wav";
 		AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(path));
 		
 		
@@ -37,13 +38,15 @@ public class Sender {
 		
 		while(true) {
 			
-			byte[] bytes = new byte[44100];  
+			byte[] bytes = new byte[512];  
 			audioInputStream.read(bytes);
-			
+			//Clip clip = AudioSystem.getClip();
+			//clip.open(audioInputStream);
+			//clip.start();
 			DatagramPacket packet = new DatagramPacket(bytes, bytes.length, address, 1337);
 			socket.send(packet);
 			
-			//Thread.sleep(1000);
+			//Thread.sleep(100000);
 		}
 	}
 	

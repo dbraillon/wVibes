@@ -31,7 +31,16 @@ package com.dbraillon.pocspotifymobile
 		
 		public function toString():String
 		{
-			var s:String = _recipient + "#" + _method + "#";
+			var s:String = "";
+			
+			if(_arguments.length == 0)
+			{
+				s = _recipient + "#" + _method;
+			}
+			else
+			{
+				s = _recipient + "#" + _method + "#";	
+			}
 			
 			for(var i:int = 0; i < _arguments.length; i++)
 			{

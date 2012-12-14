@@ -29,6 +29,8 @@
 				addEventListener(BridgeConnection.NOTFOUND_LOCAL_SEARCH_EVENT, onNotFoundLocalSearch);
 				addEventListener(BridgeConnection.FOUND_LOCAL_SEARCH_EVENT, onFoundLocalSearch);
 				
+				addEventListener(BridgeConnection.CONNECTION_LOST, onConnectionLost);
+				
 				// instanciation de la connexion au bridge
 				_bridgeConnection = new BridgeConnection(this);
 			}
@@ -124,6 +126,13 @@
 				removeEventListener(BridgeConnection.FOUND_CUSTOM_SEARCH_EVENT, onFoundCustomSearch);
 				
 				changeActionBar("Connecté au bridge.", false);
+			}
+			
+			protected function onConnectionLost(event:Event):void
+			{
+				navigator.popToFirstView();
+				
+				changeActionBar("Connexion au bridge perdu...", false);
 			}
 			
 		]]>

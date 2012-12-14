@@ -122,6 +122,14 @@
 				trace("[BridgeConnection]: La connexion est établie !");
 				navigator.pushView(HomeScreen);
 			}
+			
+			protected function localConnection_clickHandler(event:MouseEvent):void
+			{
+				removeEventListener(BridgeConnection.FOUND_LOCAL_SEARCH_EVENT, onFoundLocalSearch);
+				addEventListener(BridgeConnection.FOUND_LOCAL_SEARCH_EVENT, onFoundLocalSearch);
+				_bridgeConnection.searchLocalConfiguration();
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -143,6 +151,10 @@
 		<s:Button id="connectButton"
 				  label="Connecter"
 				  click="connect_clickHandler(event)"/>
+		
+		<s:Button id="localConnection"
+				  label="Relancer connexion locale"
+				  click="localConnection_clickHandler(event)"/>
 		
 	</s:VGroup>
 	

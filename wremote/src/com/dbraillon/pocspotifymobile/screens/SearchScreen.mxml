@@ -6,9 +6,12 @@
 	<fx:Script>
 		<![CDATA[
 			import com.dbraillon.pocspotifymobile.connections.BridgeConnection;
+			import com.dbraillon.pocspotifymobile.events.ResponseEvent;
 			
 			import mx.collections.XMLListCollection;
 			import mx.events.FlexEvent;
+			
+			import spark.events.GridEvent;
 			
 			[Bindable]
 			private var _data:XML;
@@ -33,11 +36,25 @@
 				}
 			}
 			
-			protected function onResponse(event:Event):void
+			protected function onResponse(event:ResponseEvent):void
 			{
-				var s:String = _connection._r;
-				s = s.replace("</results><results>");
-				_data = new XML(s);
+				if(event.responseType == BridgeConnection.SEARCH_RESULT_BEGIN_RESPONSE)
+				{
+					var response:String = event.response;
+					response = response.replace(BridgeConnection.SEARCH_RESULT_END_RESPONSE + BridgeConnection.SEARCH_RESULT_BEGIN_RESPONSE);
+					
+					_data = new XML(response);
+				}
+			}
+			
+			
+			protected function datagridSearch_gridClickHandler(event:GridEvent):void
+			{
+				var uri:String = event.itemRenderer.data.uri;
+				
+				trace(uri);
+				
+				_connection.sendStartMusic(uri);
 			}
 			
 		]]>
@@ -45,11 +62,11 @@
 	
 	
 	<s:VGroup width="100%" height="100%">
-		<s:HGroup width="100%">
-			<s:TextInput id="searchContent" width="80%" prompt="Rechercher une musique, un artiste, un album..."/>
-			<s:Button width="20%" label="Rechercher" click="searchButton_clickHandler(event)"/>	
+		<s:HGroup width="100%" paddingTop="10" paddingBottom="10" paddingLeft="10" paddingRight="10">
+			<s:TextInput id="searchContent" width="80%" height="100%" prompt="Rechercher une musique, un artiste, un album..."/>
+			<s:Button width="20%" label="Rechercher" click="searchButton_clickHandler(event)" skinClass="spark.skins.mobile.ViewMenuItemSkin"/>	
 		</s:HGroup>
-		<s:DataGrid id="datagridSearch" width="100%" height="100%" verticalScrollPolicy="auto" horizontalScrollPolicy="auto" dataProvider="{new XMLListCollection(XMLList(_data.result))}">
+		<s:DataGrid id="datagridSearch" width="100%" height="100%" verticalScrollPolicy="auto" horizontalScrollPolicy="auto" dataProvider="{new XMLListCollection(XMLList(_data.result))}" gridClick="datagridSearch_gridClickHandler(event)">
 			<s:columns>
 				<s:ArrayList>
 					<s:GridColumn dataField="uri" headerText="Uri" visible="false"/>

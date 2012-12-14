@@ -13,6 +13,10 @@ public class Receiver implements Runnable, IReceiver {
 
 	private ByteArrayOutputStream _outputStream;
 	
+	public Receiver() {
+		_outputStream = new ByteArrayOutputStream();
+	}
+	
 	@Override
 	public void run() {
 		
@@ -26,11 +30,14 @@ public class Receiver implements Runnable, IReceiver {
 			
 			while(true) {
 				
-				byte[] bytes = new byte[44100];
+				byte[] bytes = new byte[512];
 				DatagramPacket packet = new DatagramPacket(bytes, bytes.length);
 				
 				socket.receive(packet);
 				_outputStream.write(packet.getData());
+				//System.out.println("Taille du stream reçu : " + _outputStream.size());
+				
+				//Thread.sleep(1);
 			}
 		
 		}
@@ -41,9 +48,14 @@ public class Receiver implements Runnable, IReceiver {
 	}
 	
 	@Override
-	public ByteArrayOutputStream get() {
+	public byte[] get() {
+	
+		byte[] bytes = _outputStream.toByteArray();
 		
-		return _outputStream;
+		//System.out.println(_outputStream.size());
+		_outputStream.reset();
+		
+		return bytes;
 	}
 	
 	public static void main(String[] args) throws IOException, UnsupportedAudioFileException, LineUnavailableException, InterruptedException {
