@@ -1,5 +1,7 @@
 package com.dbraillon.pocspotifymobile
 {
+	import flash.utils.getQualifiedClassName;
+	
 	public class AddressManager
 	{
 		private var _firstPart:Array;
@@ -18,6 +20,8 @@ package com.dbraillon.pocspotifymobile
 		
 		public function AddressManager(firstPart:String, secondPartStart:int, secondPartLast:int, thirdPartStart:int, thirdPartLast:int)
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "AddressManager(" + firstPart + ", " + secondPartStart + ", " + secondPartLast + ", " + thirdPartStart + ", " + thirdPartLast + ")");
+			
 			_firstPart = new Array();
 			
 			_first = null;
@@ -31,23 +35,31 @@ package com.dbraillon.pocspotifymobile
 		
 		public function addFirstPartAddress(firstPart:String):void
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "addFirstPartAddress(" + firstPart + ")");
+			
 			_firstPart.push(firstPart);
 		}
 		
 		public function addSecondPartAddress(secondPartStart:int, secondPartLast:int = -1):void
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "addSecondPartAddress(" + secondPartStart + ", " + secondPartLast + ")");
+			
 			_secondPartStart = secondPartStart;
 			_secondPartLast = (secondPartLast != -1) ? secondPartLast : secondPartStart;
 		}
 		
 		public function addThirdPartAddress(thirdPartStart:int, thirdPartLast:int = -1):void
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "addThirdPartAddress(" + thirdPartStart + ", " + thirdPartLast + ")");
+			
 			_thirdPartStart = thirdPartStart;
 			_thirdPartLast = (thirdPartLast != -1) ? thirdPartLast : thirdPartStart;
 		}
 		
 		public function nextAddress():String
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "nextAddress()");
+			
 			var s:String;
 			
 			if(_first == null && _second == -1 && _third == -1)
@@ -57,7 +69,6 @@ package com.dbraillon.pocspotifymobile
 				_third = _thirdPartStart;
 				
 				s = _first + "." + _second + "." + _third; 
-				trace("[Address Manager]: " + s);
 				
 				return s;
 			}
@@ -80,8 +91,7 @@ package com.dbraillon.pocspotifymobile
 				return null;
 			}
 			
-			s = _first + "." + _second + "." + _third; 
-			trace("[Address Manager]: " + s);
+			s = _first + "." + _second + "." + _third;
 			
 			return s;
 		}

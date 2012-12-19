@@ -1,5 +1,7 @@
 package com.dbraillon.pocspotifymobile
 {
+	import flash.utils.getQualifiedClassName;
+	
 	public class Command
 	{
 		public static var PLAYER_RECIPIENT : String = "PLAYER";
@@ -24,6 +26,8 @@ package com.dbraillon.pocspotifymobile
 		
 		public function Command(recipient:String, method:String, arguments:Array)
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "Command(" + recipient + ", " + method + ", " + arguments.toString() + ")");
+			
 			_recipient = recipient;
 			_method = method;
 			_arguments = arguments;
@@ -31,6 +35,8 @@ package com.dbraillon.pocspotifymobile
 		
 		public function toString():String
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "toString()");
+			
 			var s:String = "";
 			
 			if(_arguments.length == 0)
@@ -54,7 +60,6 @@ package com.dbraillon.pocspotifymobile
 				}
 			}
 			
-			trace("Command : " + s);
 			return s;
 		}
 	}

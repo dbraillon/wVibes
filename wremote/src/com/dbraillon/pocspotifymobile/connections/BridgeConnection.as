@@ -2,11 +2,13 @@ package com.dbraillon.pocspotifymobile.connections
 {
 	import com.dbraillon.pocspotifymobile.AddressManager;
 	import com.dbraillon.pocspotifymobile.Command;
+	import com.dbraillon.pocspotifymobile.Log;
 	import com.dbraillon.pocspotifymobile.events.DataReceivedEvent;
 	
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.net.SharedObject;
+	import flash.utils.getQualifiedClassName;
 
 	public class BridgeConnection extends EventDispatcher
 	{	
@@ -62,8 +64,11 @@ package com.dbraillon.pocspotifymobile.connections
 		{
 			if(_instance)
 			{
+				Log.write(Log.ERROR_LEVEL, flash.utils.getQualifiedClassName(this), "Use getInstance instead of new for the further use.");
 				throw new Error("Use getInstance instead of new for the further use.");
 			}
+			
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "BridgeConnection(" + parentEventDispatcher.toString() + ")");
 			
 			_instance = this;
 			
@@ -84,6 +89,8 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		public function addEventDispatcher(parentEventDispatcher:EventDispatcher):void
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "addEventDispatcher(" + parentEventDispatcher.toString() + ")");
+			
 			// ajout d'un propagateur d'evenement
 			
 			_parentsEventDispatcher.push(parentEventDispatcher);
@@ -91,6 +98,8 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		private function parentsDispatchEvent(event:Event):void
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "parentsDispatchEvent(" + event.toString() + ")");
+			
 			// disperse l'evenement à tous les propagateurs
 			
 			var length:int = _parentsEventDispatcher.length;
@@ -103,6 +112,8 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		protected function onDataReceived(event:DataReceivedEvent):void
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "onDataReceived(" + event.toString() + ")");
+			
 			var data:String = event.data;
 			
 			if(isNewPacket(data))
@@ -128,6 +139,8 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		private function isNewPacket(response:String):Boolean
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "isNewPacket(" + response + ")");
+			
 			if(response.indexOf(SEARCH_RESULT_BEGIN_DATA) >= 0)
 			{
 				_currentResponseType = SEARCH_RESULT_BEGIN_DATA;
@@ -139,6 +152,8 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		private function isEndPacket(response:String):Boolean
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "isEndPacket(" + response + ")");
+			
 			if(_currentResponseType == SEARCH_RESULT_BEGIN_DATA)
 			{
 				if(response.indexOf(SEARCH_RESULT_END_DATA) >= 0)
@@ -152,6 +167,8 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		protected function onConnectionLost(event:Event):void
 		{
+			Log.write(Log.WARNING_LEVEL, flash.utils.getQualifiedClassName(this), "onConnectionLost(" + event.toString() + ")");
+			
 			parentsDispatchEvent(new Event(CONNECTION_LOST_EVENT));
 		}
 		
@@ -164,6 +181,8 @@ package com.dbraillon.pocspotifymobile.connections
 		// recherche d'une configuration locale
 		public function searchLocalConfiguration():void
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "searchLocalConfiguration()");
+			
 			// on commence la recherche locale
 			parentsDispatchEvent(new Event(BEGIN_LOCAL_SEARCH_EVENT));
 			
@@ -190,6 +209,8 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		protected function localConnectionErrorHandler(event:Event):void
 		{
+			Log.write(Log.ERROR_LEVEL, flash.utils.getQualifiedClassName(this), "localConnectionErrorHandler(" + event.toString() + ")");
+			
 			// une erreur est survenu, la recherche locale a échoué
 			
 			removeEventListener(Connection.CONNECTED_EVENT, localConnectionConnectedHandler);
@@ -200,6 +221,8 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		protected function localConnectionConnectedHandler(event:Event):void
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "localConnectionConnectedHandler(" + event.toString() + ")");
+			
 			// la connexion est établie
 			_isConnected = true;
 			
@@ -214,12 +237,16 @@ package com.dbraillon.pocspotifymobile.connections
 		// recherche d'une configuration basique
 		public function launchSearchBasicConfiguration():void
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "launchSearchBasicConfiguration()");
+			
 			_addressManager = new AddressManager("192.168", 0, 0, 1, 5);
 			searchBasicConfiguration(_addressManager.nextAddress());
 		}
 		
 		public function searchBasicConfiguration(address:String):void
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "searchBasicConfiguration(" + address + ")");
+			
 			_address = address;
 			
 			parentsDispatchEvent(new Event(BEGIN_BASIC_SEARCH_EVENT));
@@ -233,8 +260,9 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		protected function basicConnectionErrorHandler(event:Event):void
 		{
+			Log.write(Log.ERROR_LEVEL, flash.utils.getQualifiedClassName(this), "basicConnectionErrorHandler(" + event.toString() + ")");
+			
 			// une erreur est survenu, la recherche basic a échoué
-			trace("Bridge error");
 			
 			removeEventListener(Connection.CONNECTED_EVENT, basicConnectionConnectedHandler);
 			removeEventListener(Connection.ERROR_EVENT, basicConnectionErrorHandler);
@@ -252,6 +280,8 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		protected function basicConnectionConnectedHandler(event:Event):void
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "basicConnectionConnectedHandler(" + event.toString() + ")");
+			
 			// la connexion est établie
 			_isConnected = true;
 			
@@ -267,6 +297,8 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		public function searchCustomConfiguration(address:String):void
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "searchCustomConfiguration(" + address + ")");
+			
 			_address = address;
 			
 			addEventListener(Connection.CONNECTED_EVENT, customConnectionConnectedHandler);
@@ -279,6 +311,8 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		protected function customConnectionErrorHandler(event:Event):void
 		{
+			Log.write(Log.ERROR_LEVEL, flash.utils.getQualifiedClassName(this), "customConnectionErrorHandler(" + event.toString() + ")");
+			
 			removeEventListener(Connection.CONNECTED_EVENT, customConnectionConnectedHandler);
 			removeEventListener(Connection.ERROR_EVENT, customConnectionErrorHandler);
 			
@@ -287,6 +321,8 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		protected function customConnectionConnectedHandler(event:Event):void
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "customConnectionConnectedHandler(" + event.toString() + ")");
+			
 			_isConnected = true;
 			
 			removeEventListener(Connection.CONNECTED_EVENT, customConnectionConnectedHandler);
@@ -299,7 +335,7 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		private function addLocalConnection():void
 		{
-			trace("Address found : " + _address);
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "addLocalConnection()");
 			
 			var so:SharedObject = SharedObject.getLocal("bridge_connection");
 			so.data.connection = _address;
@@ -308,6 +344,8 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		public function sendSearchRequest(searchContent:String):void
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "sendSearchRequest(" + searchContent + ")");
+			
 			var array:Array = new Array();
 			array.push(searchContent);
 			
@@ -317,13 +355,12 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		public function sendStartMusic(uri:String):void
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "sendStartMusic(" + uri + ")");
+			
 			var command:Command = new Command(Command.PLAYER_RECIPIENT, Command.LOAD_METHOD, new Array(uri));
 			_connection.sendCommand(command);
 			
-			for(var i:int = 0; i<100; i++)
-			{
-				trace("wait...");
-			}
+			for(var i:int = 0; i<100; i++){}
 			
 			command = new Command(Command.PLAYER_RECIPIENT, Command.PLAY_METHOD, new Array());
 			_connection.sendCommand(command);
@@ -331,11 +368,15 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		public function get isConnected():Boolean
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "isConnected()");
+			
 			return _isConnected;
 		}
 		
 		public function set isConnected(value:Boolean):void
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "isConnected(" + value.toString() + ")");
+			
 			_isConnected = value;
 		}
 	}

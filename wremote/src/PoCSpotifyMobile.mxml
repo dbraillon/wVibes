@@ -8,8 +8,9 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import com.dbraillon.pocspotifymobile.connections.Connection;
+			import com.dbraillon.pocspotifymobile.Log;
 			import com.dbraillon.pocspotifymobile.connections.BridgeConnection;
+			import com.dbraillon.pocspotifymobile.connections.Connection;
 			import com.dbraillon.pocspotifymobile.screens.BridgeConfigurationScreen;
 			import com.dbraillon.pocspotifymobile.screens.HomeScreen;
 			import com.dbraillon.pocspotifymobile.screens.ParameterScreen;

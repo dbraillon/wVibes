@@ -1,5 +1,7 @@
 package com.dbraillon.pocspotifymobile.connections
 {
+	import com.dbraillon.pocspotifymobile.Command;
+	import com.dbraillon.pocspotifymobile.Log;
 	import com.dbraillon.pocspotifymobile.events.DataReceivedEvent;
 	
 	import flash.events.Event;
@@ -9,7 +11,7 @@ package com.dbraillon.pocspotifymobile.connections
 	import flash.events.SecurityErrorEvent;
 	import flash.net.DatagramSocket;
 	import flash.net.Socket;
-	import com.dbraillon.pocspotifymobile.Command;
+	import flash.utils.getQualifiedClassName;
 
 	public class Connection
 	{
@@ -28,13 +30,15 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		public function Connection(parentEventDispatcher:EventDispatcher)
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "Connection(" + parentEventDispatcher.toString() + ")");
+			
 			_parentEventDispatcher = parentEventDispatcher;
 		}
 		
 		
 		public function connect(address:String, port:int):void
 		{
-			trace("Connecting to : " + address + ":" + port + "...");
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "connect(" + address +", " + port + ")");
 			
 			// avant un essai de connexion, on tente de fermer une possible précédente connexion
 			closeSocket();
@@ -54,9 +58,9 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		protected function onSecError(event:SecurityErrorEvent):void
 		{
-			// une erreur de sécurité est survenu, la connexion se ferme et on envoie un evenement
+			Log.write(Log.ERROR_LEVEL, flash.utils.getQualifiedClassName(this), "onSecError(" + event.toString() + ")");
 			
-			trace("Connection failed : Security error");
+			// une erreur de sécurité est survenu, la connexion se ferme et on envoie un evenement
 			closeSocket();
 
 			_parentEventDispatcher.dispatchEvent(new Event(Connection.ERROR_EVENT));
@@ -64,9 +68,9 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		protected function onError(event:IOErrorEvent):void
 		{
+			Log.write(Log.ERROR_LEVEL, flash.utils.getQualifiedClassName(this), "onError(" + event.toString() + ")");
+			
 			// une erreur IO est survenu, la connexion se ferme et on envoie un evenement
-
-			trace("Connection failed : IO error");
 			closeSocket();
 
 			_parentEventDispatcher.dispatchEvent(new Event(Connection.ERROR_EVENT));
@@ -74,23 +78,21 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		protected function onConnected(event:Event):void
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "onConnected(" + event.toString() + ")");
+			
 			// la connexion a réussi, on envoie un evenement
-			
-			trace("Connected to " + _connectionSocket.remoteAddress);
-			
 			_parentEventDispatcher.dispatchEvent(new Event(Connection.CONNECTED_EVENT));
 		}
 		
 		protected function onDataReceived(event:ProgressEvent):void
 		{
-			// le client distant envoie des donnees
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "onDataReceived(" + event.toString() + ")");
 			
-			trace("Getting data from " + _connectionSocket.remoteAddress + "...");
-			
-			// construction de la réponse
+			// le client distant envoie des donnees construction de la réponse
 			var data:String = "";
 			while(_connectionSocket.bytesAvailable) {
 			
+				
 				data = data.concat(_connectionSocket.readUTFBytes(_connectionSocket.bytesAvailable));
 			}
 			
@@ -104,9 +106,9 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		protected function onClosed(event:Event):void
 		{
-			// le client distant a fermé la connexion
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "onClosed(" + event.toString() + ")");
 			
-			trace("Connection closed");
+			// le client distant a fermé la connexion
 			closeSocket();
 			
 			_parentEventDispatcher.dispatchEvent(new Event(CONNECTION_LOST_EVENT));
@@ -115,11 +117,11 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		public function sendCommand(command:Command):void
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "sendCommand(" + command.toString() + ")");
+			
 			// envoi une commande au client distant
 			
 			var commandString:String = command.toString();
-			
-			trace("Send command : " + commandString);
 			
 			_connectionSocket.writeMultiByte(commandString, "iso-8859-1");
 			_connectionSocket.flush();
@@ -129,6 +131,8 @@ package com.dbraillon.pocspotifymobile.connections
 		{
 			if(_connectionSocket != null) 
 			{
+				Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "closeSocket()");
+				
 				_connectionSocket.removeEventListener(Event.CLOSE, onClosed);
 				_connectionSocket.removeEventListener(Event.CONNECT, onConnected);
 				_connectionSocket.removeEventListener(IOErrorEvent.IO_ERROR, onError);
@@ -142,8 +146,6 @@ package com.dbraillon.pocspotifymobile.connections
 				
 				_connectionSocket = null;	
 			}
-			
-			trace("Socket closed");
 		}
 	}
 }
