@@ -1,0 +1,19 @@
+package com.dbraillon.pocspotifymobile
+{
+	public class Log
+	{
+		public static var error:int;
+		public static var error:int;
+		public static var error:int;
+		public static var error:int;
+		public static var error:int;
+		public static var error:int;
+		
+		public static function write(level:int, context:String, message:String):void
+		{
+			var localDate:Date = new Date();
+			
+			trace("- " + localDate.time + " [" + level + "](" + context + "): " + message);
+		}
+	}
+}

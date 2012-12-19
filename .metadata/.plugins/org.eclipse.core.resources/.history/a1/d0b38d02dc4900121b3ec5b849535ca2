@@ -1,0 +1,10 @@
+package com.dbraillon.pocspotifymobile
+{
+	public class Log
+	{
+		public static function trace(level:int, context:String, message:String):void
+		{
+			
+		}
+	}
+}
