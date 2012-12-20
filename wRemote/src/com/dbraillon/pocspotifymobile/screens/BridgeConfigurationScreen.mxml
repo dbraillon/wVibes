@@ -28,7 +28,7 @@
 				_bridgeConnection = BridgeConnection.getInstance();
 				
 				// ajout de cet event dispatcher
-				_bridgeConnection.addEventDispatcher(this);
+				_bridgeConnection.addParentDispatcher(this);
 				
 				// poursuite sur la recherche locale
 				_bridgeConnection.searchLocalConfiguration();

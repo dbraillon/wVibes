@@ -23,7 +23,7 @@
 				
 				addEventListener(BridgeConnection.DATA_RECEIVED_EVENT, onResponse);
 				_connection = BridgeConnection.getInstance();
-				_connection.addEventDispatcher(this);
+				_connection.addParentDispatcher(this);
 			}
 			
 			protected function searchButton_clickHandler(event:MouseEvent):void

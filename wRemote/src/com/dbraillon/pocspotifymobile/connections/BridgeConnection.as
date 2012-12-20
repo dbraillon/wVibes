@@ -1,6 +1,5 @@
 package com.dbraillon.pocspotifymobile.connections
 {
-	import com.dbraillon.pocspotifymobile.AddressManager;
 	import com.dbraillon.pocspotifymobile.Command;
 	import com.dbraillon.pocspotifymobile.Log;
 	import com.dbraillon.pocspotifymobile.events.DataReceivedEvent;
@@ -27,16 +26,9 @@ package com.dbraillon.pocspotifymobile.connections
 		// nom des evenements possibles
 		
 			// evenements de connexion
-			public static var BEGIN_LOCAL_SEARCH_EVENT		: String = "begin_local_search_event";
-			public static var NOTFOUND_LOCAL_SEARCH_EVENT	: String = "notfound_local_search_event";
-			public static var FOUND_LOCAL_SEARCH_EVENT		: String = "found_local_search_event";
-			public static var BEGIN_BASIC_SEARCH_EVENT		: String = "begin_basic_search_event";
-			public static var NOTFOUND_BASIC_SEARCH_EVENT	: String = "notfound_basic_search_event";
-			public static var FOUND_BASIC_SEARCH_EVENT		: String = "found_basic_search_event";
-			public static var BEGIN_CUSTOM_SEARCH_EVENT		: String = "begin_custom_search_event";
-			public static var NOTFOUND_CUSTOM_SEARCH_EVENT	: String = "notfound_custom_search_event";
-			public static var FOUND_CUSTOM_SEARCH_EVENT		: String = "found_custom_search_event";
-			public static var CONNECTION_LOST_EVENT 		: String = "connection_lost_event";
+			public static var CONNECTION_ESTABLISHED_EVENT : String = "connection_established_event";
+			public static var CONNECTION_ERROR_EVENT : String = "connection_error_event";
+			public static var CONNECTION_LOST_EVENT : String = "connection_lost_event";
 			
 			// evenements de donnees recu
 			public static var DATA_RECEIVED_EVENT : String = "response_search_event";
@@ -47,14 +39,12 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		// --->
 		
-		
 		private var _isConnected:Boolean;
-		private var _address:String = "";
+		private var _address:String = "192.168.0.1";
 		private var _port:int = 1338;
 		
 		private var _parentsEventDispatcher:Array;
 		private var _connection:Connection;
-		private var _addressManager:AddressManager;
 		
 		private var _isBuildingResponse:Boolean;
 		private var _currentResponseType:String;
@@ -82,12 +72,13 @@ package com.dbraillon.pocspotifymobile.connections
 			_connection = new Connection(this);
 			
 			// ajout des evenements
-			addEventListener(Connection.DATA_RECEIVED_EVENT, onDataReceived);
-			addEventListener(Connection.CONNECTION_LOST_EVENT, onConnectionLost);
-			addEventListener(Connection.ERROR_EVENT, onConnectionLost);
+			addEventListener(Connection.DATA_RECEIVED_EVENT, onDataReceived);	
+			addEventListener(Connection.CONNECTED_EVENT, onConnectionEstablishedHandler);
+			addEventListener(Connection.ERROR_EVENT, onConnectionErrorHandler);
+			addEventListener(Connection.CONNECTION_LOST_EVENT, onConnectionLostHandler);
 		}
 		
-		public function addEventDispatcher(parentEventDispatcher:EventDispatcher):void
+		public function addParentDispatcher(parentEventDispatcher:EventDispatcher):void
 		{
 			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "addEventDispatcher(" + parentEventDispatcher.toString() + ")");
 			
@@ -95,6 +86,47 @@ package com.dbraillon.pocspotifymobile.connections
 			
 			_parentsEventDispatcher.push(parentEventDispatcher);
 		}
+		
+		public function connect():void
+		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "connect()");
+			
+			_connection.connect(_address, _port);
+		}
+		
+		
+		/*
+		 * send commands
+		 */
+		
+		public function sendSearchRequest(searchContent:String):void
+		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "sendSearchRequest(" + searchContent + ")");
+			
+			var array:Array = new Array();
+			array.push(searchContent);
+			
+			var command:Command = new Command(Command.SEARCH_RECIPIENT, Command.BASIC_METHOD, array);
+			_connection.sendCommand(command);
+		}
+		
+		public function sendStartMusic(uri:String):void
+		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "sendStartMusic(" + uri + ")");
+			
+			var command:Command = new Command(Command.PLAYER_RECIPIENT, Command.LOAD_METHOD, new Array(uri));
+			_connection.sendCommand(command);
+			
+			for(var i:int = 0; i<100; i++){}
+			
+			command = new Command(Command.PLAYER_RECIPIENT, Command.PLAY_METHOD, new Array());
+			_connection.sendCommand(command);
+		}
+		
+		
+		/*
+		 * private functions
+		 */
 		
 		private function parentsDispatchEvent(event:Event):void
 		{
@@ -107,33 +139,6 @@ package com.dbraillon.pocspotifymobile.connections
 			{
 				var eventDispatcher:EventDispatcher = _parentsEventDispatcher[i];
 				eventDispatcher.dispatchEvent(event);
-			}
-		}
-		
-		protected function onDataReceived(event:DataReceivedEvent):void
-		{
-			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "onDataReceived(" + event.toString() + ")");
-			
-			var data:String = event.data;
-			
-			if(isNewPacket(data))
-			{
-				_responseBuffer = data;
-			}
-			else
-			{
-				_responseBuffer = _responseBuffer.concat(data);
-				if(isEndPacket(data))
-				{
-					var responseEvent:DataReceivedEvent = new DataReceivedEvent(DATA_RECEIVED_EVENT);
-					responseEvent.data = _responseBuffer;
-					responseEvent.dataType = _currentResponseType;
-					
-					parentsDispatchEvent(responseEvent);
-					
-					_responseBuffer = "";
-					_currentResponseType = "";
-				}
 			}
 		}
 		
@@ -165,206 +170,64 @@ package com.dbraillon.pocspotifymobile.connections
 			return false;
 		}
 		
-		protected function onConnectionLost(event:Event):void
+		
+		/*
+		 * handlers
+		 */
+		
+		// connection handler
+		protected function onConnectionEstablishedHandler(event:Event):void
 		{
-			Log.write(Log.WARNING_LEVEL, flash.utils.getQualifiedClassName(this), "onConnectionLost(" + event.toString() + ")");
+			Log.write(Log.INFO_LEVEL, flash.utils.getQualifiedClassName(this), "onConnectionEstablishedHandler(" + event.toString() + ")");
+			
+			parentsDispatchEvent(new Event(CONNECTION_ESTABLISHED_EVENT));
+		}
+		
+		protected function onConnectionErrorHandler(event:Event):void
+		{
+			Log.write(Log.WARNING_LEVEL, flash.utils.getQualifiedClassName(this), "onConnectionErrorHandler(" + event.toString() + ")");
+			
+			parentsDispatchEvent(new Event(CONNECTION_ERROR_EVENT));
+		}
+		
+		protected function onConnectionLostHandler(event:Event):void
+		{
+			Log.write(Log.WARNING_LEVEL, flash.utils.getQualifiedClassName(this), "onConnectionLostHandler(" + event.toString() + ")");
 			
 			parentsDispatchEvent(new Event(CONNECTION_LOST_EVENT));
 		}
 		
-		
-		
-		
-		
-		
-		
-		// recherche d'une configuration locale
-		public function searchLocalConfiguration():void
+		protected function onDataReceived(event:DataReceivedEvent):void
 		{
-			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "searchLocalConfiguration()");
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "onDataReceived(" + event.toString() + ")");
 			
-			// on commence la recherche locale
-			parentsDispatchEvent(new Event(BEGIN_LOCAL_SEARCH_EVENT));
+			var data:String = event.data;
 			
-			// récupération du store
-			var so:SharedObject = SharedObject.getLocal("bridge_connection");
-			
-			// récupération de la valeur "connection" de l'objet contenu dans le store
-			var tempAddress:String = so.data.connection;
-			
-			if(tempAddress != null)
+			if(isNewPacket(data))
 			{
-				// si il y a bien une address on tente de se connecter dessus
-				addEventListener(Connection.CONNECTED_EVENT, localConnectionConnectedHandler);
-				addEventListener(Connection.ERROR_EVENT, localConnectionErrorHandler);
-				
-				_connection.connect(tempAddress, _port);
+				_responseBuffer = data;
 			}
 			else
 			{
-				// sinon la recherche a échoué
-				parentsDispatchEvent(new Event(NOTFOUND_LOCAL_SEARCH_EVENT));
+				_responseBuffer = _responseBuffer.concat(data);
+				if(isEndPacket(data))
+				{
+					var responseEvent:DataReceivedEvent = new DataReceivedEvent(DATA_RECEIVED_EVENT);
+					responseEvent.data = _responseBuffer;
+					responseEvent.dataType = _currentResponseType;
+					
+					parentsDispatchEvent(responseEvent);
+					
+					_responseBuffer = "";
+					_currentResponseType = "";
+				}
 			}
 		}
 		
-		protected function localConnectionErrorHandler(event:Event):void
-		{
-			Log.write(Log.ERROR_LEVEL, flash.utils.getQualifiedClassName(this), "localConnectionErrorHandler(" + event.toString() + ")");
-			
-			// une erreur est survenu, la recherche locale a échoué
-			
-			removeEventListener(Connection.CONNECTED_EVENT, localConnectionConnectedHandler);
-			removeEventListener(Connection.ERROR_EVENT, localConnectionErrorHandler);
-			
-			parentsDispatchEvent(new Event(NOTFOUND_LOCAL_SEARCH_EVENT));
-		}
 		
-		protected function localConnectionConnectedHandler(event:Event):void
-		{
-			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "localConnectionConnectedHandler(" + event.toString() + ")");
-			
-			// la connexion est établie
-			_isConnected = true;
-			
-			removeEventListener(Connection.CONNECTED_EVENT, localConnectionConnectedHandler);
-			removeEventListener(Connection.ERROR_EVENT, localConnectionErrorHandler);
-			
-			parentsDispatchEvent(new Event(FOUND_LOCAL_SEARCH_EVENT));
-		}
-		// fin de la recherche de configuration locale
-		
-		
-		// recherche d'une configuration basique
-		public function launchSearchBasicConfiguration():void
-		{
-			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "launchSearchBasicConfiguration()");
-			
-			_addressManager = new AddressManager("192.168", 0, 0, 1, 5);
-			searchBasicConfiguration(_addressManager.nextAddress());
-		}
-		
-		public function searchBasicConfiguration(address:String):void
-		{
-			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "searchBasicConfiguration(" + address + ")");
-			
-			_address = address;
-			
-			parentsDispatchEvent(new Event(BEGIN_BASIC_SEARCH_EVENT));
-			
-			
-			addEventListener(Connection.CONNECTED_EVENT, basicConnectionConnectedHandler);
-			addEventListener(Connection.ERROR_EVENT, basicConnectionErrorHandler);
-			
-			_connection.connect(_address, _port);
-		}
-		
-		protected function basicConnectionErrorHandler(event:Event):void
-		{
-			Log.write(Log.ERROR_LEVEL, flash.utils.getQualifiedClassName(this), "basicConnectionErrorHandler(" + event.toString() + ")");
-			
-			// une erreur est survenu, la recherche basic a échoué
-			
-			removeEventListener(Connection.CONNECTED_EVENT, basicConnectionConnectedHandler);
-			removeEventListener(Connection.ERROR_EVENT, basicConnectionErrorHandler);
-			
-			var address:String = _addressManager.nextAddress();
-			if(address == null)
-			{
-				parentsDispatchEvent(new Event(NOTFOUND_BASIC_SEARCH_EVENT));
-			}
-			else
-			{
-				searchBasicConfiguration(address);	
-			}
-		}
-		
-		protected function basicConnectionConnectedHandler(event:Event):void
-		{
-			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "basicConnectionConnectedHandler(" + event.toString() + ")");
-			
-			// la connexion est établie
-			_isConnected = true;
-			
-			removeEventListener(Connection.CONNECTED_EVENT, basicConnectionConnectedHandler);
-			removeEventListener(Connection.ERROR_EVENT, basicConnectionErrorHandler);
-			
-			addLocalConnection();
-			
-			parentsDispatchEvent(new Event(FOUND_BASIC_SEARCH_EVENT));
-		}
-		// fin de la recherche de configuration basique
-		
-		
-		public function searchCustomConfiguration(address:String):void
-		{
-			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "searchCustomConfiguration(" + address + ")");
-			
-			_address = address;
-			
-			addEventListener(Connection.CONNECTED_EVENT, customConnectionConnectedHandler);
-			addEventListener(Connection.ERROR_EVENT, customConnectionErrorHandler);
-			
-			parentsDispatchEvent(new Event(BridgeConnection.BEGIN_CUSTOM_SEARCH_EVENT));
-			
-			_connection.connect(_address, _port);
-		}
-		
-		protected function customConnectionErrorHandler(event:Event):void
-		{
-			Log.write(Log.ERROR_LEVEL, flash.utils.getQualifiedClassName(this), "customConnectionErrorHandler(" + event.toString() + ")");
-			
-			removeEventListener(Connection.CONNECTED_EVENT, customConnectionConnectedHandler);
-			removeEventListener(Connection.ERROR_EVENT, customConnectionErrorHandler);
-			
-			parentsDispatchEvent(new Event(BridgeConnection.NOTFOUND_CUSTOM_SEARCH_EVENT));
-		}
-		
-		protected function customConnectionConnectedHandler(event:Event):void
-		{
-			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "customConnectionConnectedHandler(" + event.toString() + ")");
-			
-			_isConnected = true;
-			
-			removeEventListener(Connection.CONNECTED_EVENT, customConnectionConnectedHandler);
-			removeEventListener(Connection.ERROR_EVENT, customConnectionErrorHandler);
-			
-			addLocalConnection();
-			
-			parentsDispatchEvent(new Event(BridgeConnection.FOUND_CUSTOM_SEARCH_EVENT));
-		}
-		
-		private function addLocalConnection():void
-		{
-			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "addLocalConnection()");
-			
-			var so:SharedObject = SharedObject.getLocal("bridge_connection");
-			so.data.connection = _address;
-			so.flush();
-		}
-		
-		public function sendSearchRequest(searchContent:String):void
-		{
-			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "sendSearchRequest(" + searchContent + ")");
-			
-			var array:Array = new Array();
-			array.push(searchContent);
-			
-			var command:Command = new Command(Command.SEARCH_RECIPIENT, Command.BASIC_METHOD, array);
-			_connection.sendCommand(command);
-		}
-		
-		public function sendStartMusic(uri:String):void
-		{
-			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "sendStartMusic(" + uri + ")");
-			
-			var command:Command = new Command(Command.PLAYER_RECIPIENT, Command.LOAD_METHOD, new Array(uri));
-			_connection.sendCommand(command);
-			
-			for(var i:int = 0; i<100; i++){}
-			
-			command = new Command(Command.PLAYER_RECIPIENT, Command.PLAY_METHOD, new Array());
-			_connection.sendCommand(command);
-		}
+		/*
+		 * getters and setters
+		 */
 		
 		public function get isConnected():Boolean
 		{

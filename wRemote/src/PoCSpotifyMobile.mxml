@@ -2,7 +2,7 @@
 <s:ViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
 								  xmlns:s="library://ns.adobe.com/flex/spark" applicationDPI="160"
 								  firstView="com.dbraillon.pocspotifymobile.screens.BridgeConfigurationScreen"
-								  splashScreenImage="@Embed('assets/spotify-logo.png')"
+								  splashScreenImage="@Embed('assets/wmusic-v1-final.png')"
 								  splashScreenScaleMode="letterbox"
 								  preinitialize="application_preinitializeHandler(event)">
 	
@@ -26,14 +26,46 @@
 			protected function application_preinitializeHandler(event:FlexEvent):void
 			{
 				// ajout des écouteurs pour la connexion au bridge
-				addEventListener(BridgeConnection.BEGIN_LOCAL_SEARCH_EVENT, onBeginLocalSearch);
-				addEventListener(BridgeConnection.NOTFOUND_LOCAL_SEARCH_EVENT, onNotFoundLocalSearch);
-				addEventListener(BridgeConnection.FOUND_LOCAL_SEARCH_EVENT, onFoundLocalSearch);
+				addConnectionListener();
 				
+				// connexion perdu
 				addEventListener(BridgeConnection.CONNECTION_LOST_EVENT, onConnectionLost);
 				
 				// instanciation de la connexion au bridge
 				_bridgeConnection = new BridgeConnection(this);
+			}
+			
+			private function addConnectionListener():void
+			{
+				// recherche locale
+				addEventListener(BridgeConnection.BEGIN_LOCAL_SEARCH_EVENT, onBeginLocalSearch);
+				addEventListener(BridgeConnection.NOTFOUND_LOCAL_SEARCH_EVENT, onNotFoundLocalSearch);
+				addEventListener(BridgeConnection.FOUND_LOCAL_SEARCH_EVENT, onFoundLocalSearch);
+				
+				// recherche basique
+				addEventListener(BridgeConnection.BEGIN_BASIC_SEARCH_EVENT, onBeginBasicSearch);
+				addEventListener(BridgeConnection.NOTFOUND_BASIC_SEARCH_EVENT, onNotFoundBasicSearch);
+				addEventListener(BridgeConnection.FOUND_BASIC_SEARCH_EVENT, onFoundBasicSearch);
+				
+				// recherche personnalisée
+				addEventListener(BridgeConnection.BEGIN_CUSTOM_SEARCH_EVENT, onBeginCustomSearch);
+				addEventListener(BridgeConnection.NOTFOUND_CUSTOM_SEARCH_EVENT, onNotFoundCustomSearch);
+				addEventListener(BridgeConnection.FOUND_CUSTOM_SEARCH_EVENT, onFoundCustomSearch);
+			}
+			
+			private function removeConnectionListener():void
+			{
+				removeEventListener(BridgeConnection.BEGIN_LOCAL_SEARCH_EVENT, onBeginLocalSearch);
+				removeEventListener(BridgeConnection.NOTFOUND_LOCAL_SEARCH_EVENT, onNotFoundLocalSearch);
+				removeEventListener(BridgeConnection.FOUND_LOCAL_SEARCH_EVENT, onFoundLocalSearch);
+				
+				removeEventListener(BridgeConnection.BEGIN_BASIC_SEARCH_EVENT, onBeginBasicSearch);
+				removeEventListener(BridgeConnection.NOTFOUND_BASIC_SEARCH_EVENT, onNotFoundBasicSearch);
+				removeEventListener(BridgeConnection.FOUND_BASIC_SEARCH_EVENT, onFoundBasicSearch);
+				
+				removeEventListener(BridgeConnection.BEGIN_CUSTOM_SEARCH_EVENT, onBeginCustomSearch);
+				removeEventListener(BridgeConnection.NOTFOUND_CUSTOM_SEARCH_EVENT, onNotFoundCustomSearch);
+				removeEventListener(BridgeConnection.FOUND_CUSTOM_SEARCH_EVENT, onFoundCustomSearch);
 			}
 			
 			// change le texte du label et la visibilité de l'indicateur
@@ -52,23 +84,12 @@
 			// action demandé si la recherche de configuration locale a échoué
 			protected function onNotFoundLocalSearch(event:Event):void
 			{
-				removeEventListener(BridgeConnection.BEGIN_LOCAL_SEARCH_EVENT, onBeginLocalSearch);
-				removeEventListener(BridgeConnection.NOTFOUND_LOCAL_SEARCH_EVENT, onNotFoundLocalSearch);
-				removeEventListener(BridgeConnection.FOUND_LOCAL_SEARCH_EVENT, onFoundLocalSearch);
-				
-				addEventListener(BridgeConnection.BEGIN_BASIC_SEARCH_EVENT, onBeginBasicSearch);
-				addEventListener(BridgeConnection.NOTFOUND_BASIC_SEARCH_EVENT, onNotFoundBasicSearch);
-				addEventListener(BridgeConnection.FOUND_BASIC_SEARCH_EVENT, onFoundBasicSearch);
-				
+				changeActionBar("La recherche d'une précédente configuration n'a rien donné", false);
 			}
 			
 			protected function onFoundLocalSearch(event:Event):void
 			{
-				removeEventListener(BridgeConnection.BEGIN_LOCAL_SEARCH_EVENT, onBeginLocalSearch);
-				removeEventListener(BridgeConnection.NOTFOUND_LOCAL_SEARCH_EVENT, onNotFoundLocalSearch);
-				removeEventListener(BridgeConnection.FOUND_LOCAL_SEARCH_EVENT, onFoundLocalSearch);
-				
-				changeActionBar("Connecté au bridge.", false);
+				changeActionBar("Connecté au bridge", false);
 			}
 			
 			protected function onBeginBasicSearch(event:Event):void
