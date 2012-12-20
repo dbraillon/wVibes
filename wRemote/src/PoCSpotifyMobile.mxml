@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:ViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
 								  xmlns:s="library://ns.adobe.com/flex/spark" applicationDPI="160"
-								  firstView="com.dbraillon.pocspotifymobile.screens.BridgeConfigurationScreen"
+								  firstView="com.dbraillon.pocspotifymobile.screens.ErrorScreen"
 								  splashScreenImage="@Embed('assets/wmusic-v1-final.png')"
 								  splashScreenScaleMode="letterbox"
 								  preinitialize="application_preinitializeHandler(event)">
@@ -11,7 +11,6 @@
 			import com.dbraillon.pocspotifymobile.Log;
 			import com.dbraillon.pocspotifymobile.connections.BridgeConnection;
 			import com.dbraillon.pocspotifymobile.connections.Connection;
-			import com.dbraillon.pocspotifymobile.screens.BridgeConfigurationScreen;
 			import com.dbraillon.pocspotifymobile.screens.HomeScreen;
 			import com.dbraillon.pocspotifymobile.screens.ParameterScreen;
 			
@@ -23,51 +22,6 @@
 			
 			private var _bridgeConnection:BridgeConnection;
 			
-			protected function application_preinitializeHandler(event:FlexEvent):void
-			{
-				// ajout des écouteurs pour la connexion au bridge
-				addConnectionListener();
-				
-				// connexion perdu
-				addEventListener(BridgeConnection.CONNECTION_LOST_EVENT, onConnectionLost);
-				
-				// instanciation de la connexion au bridge
-				_bridgeConnection = new BridgeConnection(this);
-			}
-			
-			private function addConnectionListener():void
-			{
-				// recherche locale
-				addEventListener(BridgeConnection.BEGIN_LOCAL_SEARCH_EVENT, onBeginLocalSearch);
-				addEventListener(BridgeConnection.NOTFOUND_LOCAL_SEARCH_EVENT, onNotFoundLocalSearch);
-				addEventListener(BridgeConnection.FOUND_LOCAL_SEARCH_EVENT, onFoundLocalSearch);
-				
-				// recherche basique
-				addEventListener(BridgeConnection.BEGIN_BASIC_SEARCH_EVENT, onBeginBasicSearch);
-				addEventListener(BridgeConnection.NOTFOUND_BASIC_SEARCH_EVENT, onNotFoundBasicSearch);
-				addEventListener(BridgeConnection.FOUND_BASIC_SEARCH_EVENT, onFoundBasicSearch);
-				
-				// recherche personnalisée
-				addEventListener(BridgeConnection.BEGIN_CUSTOM_SEARCH_EVENT, onBeginCustomSearch);
-				addEventListener(BridgeConnection.NOTFOUND_CUSTOM_SEARCH_EVENT, onNotFoundCustomSearch);
-				addEventListener(BridgeConnection.FOUND_CUSTOM_SEARCH_EVENT, onFoundCustomSearch);
-			}
-			
-			private function removeConnectionListener():void
-			{
-				removeEventListener(BridgeConnection.BEGIN_LOCAL_SEARCH_EVENT, onBeginLocalSearch);
-				removeEventListener(BridgeConnection.NOTFOUND_LOCAL_SEARCH_EVENT, onNotFoundLocalSearch);
-				removeEventListener(BridgeConnection.FOUND_LOCAL_SEARCH_EVENT, onFoundLocalSearch);
-				
-				removeEventListener(BridgeConnection.BEGIN_BASIC_SEARCH_EVENT, onBeginBasicSearch);
-				removeEventListener(BridgeConnection.NOTFOUND_BASIC_SEARCH_EVENT, onNotFoundBasicSearch);
-				removeEventListener(BridgeConnection.FOUND_BASIC_SEARCH_EVENT, onFoundBasicSearch);
-				
-				removeEventListener(BridgeConnection.BEGIN_CUSTOM_SEARCH_EVENT, onBeginCustomSearch);
-				removeEventListener(BridgeConnection.NOTFOUND_CUSTOM_SEARCH_EVENT, onNotFoundCustomSearch);
-				removeEventListener(BridgeConnection.FOUND_CUSTOM_SEARCH_EVENT, onFoundCustomSearch);
-			}
-			
 			// change le texte du label et la visibilité de l'indicateur
 			private function changeActionBar(label:String, busyIndicator:Boolean):void
 			{
@@ -75,48 +29,21 @@
 				actionLabel.text = label;
 			}
 			
-			// action demandé quand la recherche de configuration locale commence
-			protected function onBeginLocalSearch(event:Event):void
-			{
-				changeActionBar("Recherche d'une précédente configuration...", true);
-			}
 			
-			// action demandé si la recherche de configuration locale a échoué
-			protected function onNotFoundLocalSearch(event:Event):void
-			{
-				changeActionBar("La recherche d'une précédente configuration n'a rien donné", false);
-			}
+			/*
+			 * handlers
+			 */
 			
-			protected function onFoundLocalSearch(event:Event):void
+			protected function application_preinitializeHandler(event:FlexEvent):void
 			{
-				changeActionBar("Connecté au bridge", false);
-			}
-			
-			protected function onBeginBasicSearch(event:Event):void
-			{
-				changeActionBar("Recherche d'une configuration basique...", true);
-			}
-			
-			protected function onNotFoundBasicSearch(event:Event):void
-			{
-				removeEventListener(BridgeConnection.BEGIN_BASIC_SEARCH_EVENT, onBeginBasicSearch);
-				removeEventListener(BridgeConnection.NOTFOUND_BASIC_SEARCH_EVENT, onNotFoundBasicSearch);
-				removeEventListener(BridgeConnection.FOUND_BASIC_SEARCH_EVENT, onFoundBasicSearch);
+				// ajout des écouteurs pour la connexion au bridge
+				addEventListener(BridgeConnection.CONNECTION_ESTABLISHED_EVENT, onConnectionEstablishedHandler);
+				addEventListener(BridgeConnection.CONNECTION_ERROR_EVENT, onConnectionErrorHandler);
+				addEventListener(BridgeConnection.CONNECTION_LOST_EVENT, onConnectionLostHandler);
 				
-				addEventListener(BridgeConnection.BEGIN_CUSTOM_SEARCH_EVENT, onBeginCustomSearch);
-				addEventListener(BridgeConnection.NOTFOUND_CUSTOM_SEARCH_EVENT, onNotFoundCustomSearch);
-				addEventListener(BridgeConnection.FOUND_CUSTOM_SEARCH_EVENT, onFoundCustomSearch);
-				
-				changeActionBar("", false);
-			}
-			
-			protected function onFoundBasicSearch(event:Event):void
-			{
-				removeEventListener(BridgeConnection.BEGIN_BASIC_SEARCH_EVENT, onBeginBasicSearch);
-				removeEventListener(BridgeConnection.NOTFOUND_BASIC_SEARCH_EVENT, onNotFoundBasicSearch);
-				removeEventListener(BridgeConnection.FOUND_BASIC_SEARCH_EVENT, onFoundBasicSearch);
-				
-				changeActionBar("Connecté au bridge.", false);
+				// instanciation de la connexion au bridge
+				_bridgeConnection = new BridgeConnection(this);
+				_bridgeConnection.connect();
 			}
 			
 			protected function backButton_clickHandler(event:MouseEvent):void
@@ -127,34 +54,21 @@
 				}
 			}
 			
-			protected function onBeginCustomSearch(event:Event):void
+			protected function onConnectionLostHandler(event:Event):void
 			{
-				changeActionBar("Recherche de la configuration personnalisé...", true);
+				changeActionBar("La connexion au bridge est perdu", false);
 			}
 			
-			protected function onNotFoundCustomSearch(event:Event):void
+			protected function onConnectionErrorHandler(event:Event):void
 			{
-				removeEventListener(BridgeConnection.BEGIN_CUSTOM_SEARCH_EVENT, onBeginCustomSearch);
-				removeEventListener(BridgeConnection.NOTFOUND_CUSTOM_SEARCH_EVENT, onNotFoundCustomSearch);
-				removeEventListener(BridgeConnection.FOUND_CUSTOM_SEARCH_EVENT, onFoundCustomSearch);
-				
-				changeActionBar("Le bridge n'a pas été trouvé...", false);
+				changeActionBar("La connexion au bridge est perdu", false);
 			}
 			
-			protected function onFoundCustomSearch(event:Event):void
+			protected function onConnectionEstablishedHandler(event:Event):void
 			{
-				removeEventListener(BridgeConnection.BEGIN_CUSTOM_SEARCH_EVENT, onBeginCustomSearch);
-				removeEventListener(BridgeConnection.NOTFOUND_CUSTOM_SEARCH_EVENT, onNotFoundCustomSearch);
-				removeEventListener(BridgeConnection.FOUND_CUSTOM_SEARCH_EVENT, onFoundCustomSearch);
+				changeActionBar("Connecté", false);
 				
-				changeActionBar("Connecté au bridge.", false);
-			}
-			
-			protected function onConnectionLost(event:Event):void
-			{
-				navigator.popToFirstView();
-				
-				changeActionBar("Connexion au bridge perdu...", false);
+				navigator.pushView(HomeScreen);
 			}
 			
 		]]>
