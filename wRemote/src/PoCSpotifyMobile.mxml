@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+								  xmlns:s="library://ns.adobe.com/flex/spark" applicationDPI="160"
+								  firstView="com.dbraillon.pocspotifymobile.screens.BridgeConfigurationScreen"
+								  splashScreenImage="@Embed('assets/spotify-logo.png')"
+								  splashScreenScaleMode="letterbox"
+								  preinitialize="application_preinitializeHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.dbraillon.pocspotifymobile.Log;
+			import com.dbraillon.pocspotifymobile.connections.BridgeConnection;
+			import com.dbraillon.pocspotifymobile.connections.Connection;
+			import com.dbraillon.pocspotifymobile.screens.BridgeConfigurationScreen;
+			import com.dbraillon.pocspotifymobile.screens.HomeScreen;
+			import com.dbraillon.pocspotifymobile.screens.ParameterScreen;
+			
+			import mx.events.FlexEvent;
+			
+			import spark.components.Label;
+			import spark.components.supportClasses.ViewNavigatorBase;
+			
+			
+			private var _bridgeConnection:BridgeConnection;
+			
+			protected function application_preinitializeHandler(event:FlexEvent):void
+			{
+				// ajout des écouteurs pour la connexion au bridge
+				addEventListener(BridgeConnection.BEGIN_LOCAL_SEARCH_EVENT, onBeginLocalSearch);
+				addEventListener(BridgeConnection.NOTFOUND_LOCAL_SEARCH_EVENT, onNotFoundLocalSearch);
+				addEventListener(BridgeConnection.FOUND_LOCAL_SEARCH_EVENT, onFoundLocalSearch);
+				
+				addEventListener(BridgeConnection.CONNECTION_LOST_EVENT, onConnectionLost);
+				
+				// instanciation de la connexion au bridge
+				_bridgeConnection = new BridgeConnection(this);
+			}
+			
+			// change le texte du label et la visibilité de l'indicateur
+			private function changeActionBar(label:String, busyIndicator:Boolean):void
+			{
+				actionBusyIndicator.visible = busyIndicator;
+				actionLabel.text = label;
+			}
+			
+			// action demandé quand la recherche de configuration locale commence
+			protected function onBeginLocalSearch(event:Event):void
+			{
+				changeActionBar("Recherche d'une précédente configuration...", true);
+			}
+			
+			// action demandé si la recherche de configuration locale a échoué
+			protected function onNotFoundLocalSearch(event:Event):void
+			{
+				removeEventListener(BridgeConnection.BEGIN_LOCAL_SEARCH_EVENT, onBeginLocalSearch);
+				removeEventListener(BridgeConnection.NOTFOUND_LOCAL_SEARCH_EVENT, onNotFoundLocalSearch);
+				removeEventListener(BridgeConnection.FOUND_LOCAL_SEARCH_EVENT, onFoundLocalSearch);
+				
+				addEventListener(BridgeConnection.BEGIN_BASIC_SEARCH_EVENT, onBeginBasicSearch);
+				addEventListener(BridgeConnection.NOTFOUND_BASIC_SEARCH_EVENT, onNotFoundBasicSearch);
+				addEventListener(BridgeConnection.FOUND_BASIC_SEARCH_EVENT, onFoundBasicSearch);
+				
+			}
+			
+			protected function onFoundLocalSearch(event:Event):void
+			{
+				removeEventListener(BridgeConnection.BEGIN_LOCAL_SEARCH_EVENT, onBeginLocalSearch);
+				removeEventListener(BridgeConnection.NOTFOUND_LOCAL_SEARCH_EVENT, onNotFoundLocalSearch);
+				removeEventListener(BridgeConnection.FOUND_LOCAL_SEARCH_EVENT, onFoundLocalSearch);
+				
+				changeActionBar("Connecté au bridge.", false);
+			}
+			
+			protected function onBeginBasicSearch(event:Event):void
+			{
+				changeActionBar("Recherche d'une configuration basique...", true);
+			}
+			
+			protected function onNotFoundBasicSearch(event:Event):void
+			{
+				removeEventListener(BridgeConnection.BEGIN_BASIC_SEARCH_EVENT, onBeginBasicSearch);
+				removeEventListener(BridgeConnection.NOTFOUND_BASIC_SEARCH_EVENT, onNotFoundBasicSearch);
+				removeEventListener(BridgeConnection.FOUND_BASIC_SEARCH_EVENT, onFoundBasicSearch);
+				
+				addEventListener(BridgeConnection.BEGIN_CUSTOM_SEARCH_EVENT, onBeginCustomSearch);
+				addEventListener(BridgeConnection.NOTFOUND_CUSTOM_SEARCH_EVENT, onNotFoundCustomSearch);
+				addEventListener(BridgeConnection.FOUND_CUSTOM_SEARCH_EVENT, onFoundCustomSearch);
+				
+				changeActionBar("", false);
+			}
+			
+			protected function onFoundBasicSearch(event:Event):void
+			{
+				removeEventListener(BridgeConnection.BEGIN_BASIC_SEARCH_EVENT, onBeginBasicSearch);
+				removeEventListener(BridgeConnection.NOTFOUND_BASIC_SEARCH_EVENT, onNotFoundBasicSearch);
+				removeEventListener(BridgeConnection.FOUND_BASIC_SEARCH_EVENT, onFoundBasicSearch);
+				
+				changeActionBar("Connecté au bridge.", false);
+			}
+			
+			protected function backButton_clickHandler(event:MouseEvent):void
+			{
+				if (navigator.length > 1) {
+					
+					navigator.popView();
+				}
+			}
+			
+			protected function onBeginCustomSearch(event:Event):void
+			{
+				changeActionBar("Recherche de la configuration personnalisé...", true);
+			}
+			
+			protected function onNotFoundCustomSearch(event:Event):void
+			{
+				removeEventListener(BridgeConnection.BEGIN_CUSTOM_SEARCH_EVENT, onBeginCustomSearch);
+				removeEventListener(BridgeConnection.NOTFOUND_CUSTOM_SEARCH_EVENT, onNotFoundCustomSearch);
+				removeEventListener(BridgeConnection.FOUND_CUSTOM_SEARCH_EVENT, onFoundCustomSearch);
+				
+				changeActionBar("Le bridge n'a pas été trouvé...", false);
+			}
+			
+			protected function onFoundCustomSearch(event:Event):void
+			{
+				removeEventListener(BridgeConnection.BEGIN_CUSTOM_SEARCH_EVENT, onBeginCustomSearch);
+				removeEventListener(BridgeConnection.NOTFOUND_CUSTOM_SEARCH_EVENT, onNotFoundCustomSearch);
+				removeEventListener(BridgeConnection.FOUND_CUSTOM_SEARCH_EVENT, onFoundCustomSearch);
+				
+				changeActionBar("Connecté au bridge.", false);
+			}
+			
+			protected function onConnectionLost(event:Event):void
+			{
+				navigator.popToFirstView();
+				
+				changeActionBar("Connexion au bridge perdu...", false);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:navigationContent>
+		<s:Button id="backButton" label="Retour" click="backButton_clickHandler(event)"/>
+	</s:navigationContent>
+	
+	<s:actionContent>
+		<s:BusyIndicator id="actionBusyIndicator"
+						 visible="false"
+						 symbolColor="#f0f0f0"/>
+		<s:Label id="actionLabel"
+				 color="#f0f0f0"
+				 paddingLeft="10"
+				 paddingRight="10"/>
+	</s:actionContent>
+	
+</s:ViewNavigatorApplication>
