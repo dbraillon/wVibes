@@ -1,4 +1,4 @@
-SpotifyEverywhere
+wMusic
 ==========
 
-Streaming system using Spotify.
+Connect your speaker to the Cloud !
