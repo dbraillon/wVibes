@@ -40,7 +40,7 @@ package com.dbraillon.pocspotifymobile.connections
 		// --->
 		
 		private var _isConnected:Boolean;
-		private var _address:String = "192.168.0.1";
+		private var _address:String = "10.18.18.134";
 		private var _port:int = 1338;
 		
 		private var _parentsEventDispatcher:Array;

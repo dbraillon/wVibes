@@ -57,11 +57,15 @@
 			protected function onConnectionLostHandler(event:Event):void
 			{
 				changeActionBar("La connexion au bridge est perdu", false);
+				
+				navigator.popToFirstView();
 			}
 			
 			protected function onConnectionErrorHandler(event:Event):void
 			{
 				changeActionBar("La connexion au bridge est perdu", false);
+				
+				navigator.popToFirstView();
 			}
 			
 			protected function onConnectionEstablishedHandler(event:Event):void
@@ -75,7 +79,7 @@
 	</fx:Script>
 	
 	<s:navigationContent>
-		<s:Button id="backButton" label="Retour" click="backButton_clickHandler(event)"/>
+		<s:Button id="backButton" label="Retour" click="backButton_clickHandler(event)" visible="{((navigator.length > 0) ? true : false)}"/>
 	</s:navigationContent>
 	
 	<s:actionContent>
