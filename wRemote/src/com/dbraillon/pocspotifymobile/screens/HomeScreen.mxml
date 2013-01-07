@@ -53,7 +53,7 @@
 							navigator.pushView(SearchScreen);
 							break;
 						case "Playing":
-							//navigator.pushView(PlayingScreen);
+							navigator.pushView(PlayingScreen);
 							break;
 					}
 				}

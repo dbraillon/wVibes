@@ -9,40 +9,37 @@
 				 horizontalAlign="center"
 				 source="assets/David-Guetta-She-Wolf.jpg"/>
 		
-		<s:HGroup height="15%" width="100%">
-			<s:Button id="starredButton"
-					  height="32" width="32"
-					  icon="assets/starred.png"/>
-			<s:VGroup height="100%" width="100%"
-					  horizontalAlign="center">
-				<s:Label id="titleName"
-						 height="50%" width="100%"
-						 text="She Wolf (Falling into pieces)"
-						 horizontalCenter="center"/>
-				<s:Label id="titleArtist"
-						 height="50%" width="100%"
-						 text="David Ghetta ft. Sia"
-						 horizontalCenter="center"/>	
-			</s:VGroup>
-		</s:HGroup>
+		<s:VGroup height="10%" width="100%" horizontalAlign="center">
+			<s:Label id="titleName"
+					 height="50%" width="100%"
+					 text="She Wolf (Falling into pieces)"/>
+			<s:Label id="titleArtist"
+					 height="50%" width="100%"
+					 text="David Ghetta ft. Sia"/>	
+		</s:VGroup>
 		
 		<s:HGroup height="15%" width="100%"
 				  horizontalAlign="center">
 			<s:Button id="shuffleButton"
 					  height="100%" width="19%"
-					  icon=""/>
+					  icon=""
+					  skinClass="spark.skins.mobile.ViewMenuItemSkin"/>
 			<s:Button id="previousButton"
 					  height="100%" width="19%"
-					  icon=""/>
+					  icon="assets/previous_blue_icon.png"
+					  skinClass="spark.skins.mobile.ViewMenuItemSkin"/>
 			<s:Button id="playPauseButton"
 					  height="100%" width="24%"
-					  icon=""/>
+					  icon="assets/play_blue_icon.png"
+					  skinClass="spark.skins.mobile.ViewMenuItemSkin"/>
 			<s:Button id="nextButton"
 					  height="100%" width="19%"
-					  icon=""/>
+					  icon="assets/next_blue_icon.png"
+					  skinClass="spark.skins.mobile.ViewMenuItemSkin"/>
 			<s:Button id="repeatButton"
 					  height="100%" width="19%"
-					  icon=""/>	
+					  icon=""
+					  skinClass="spark.skins.mobile.ViewMenuItemSkin"/>	
 		</s:HGroup>
 	</s:VGroup>
 	
