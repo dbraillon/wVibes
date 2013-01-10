@@ -2,7 +2,8 @@
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark"
 		title="Spotify"
-		preinitialize="view_preinitializeHandler(event)">
+		preinitialize="view_preinitializeHandler(event)"
+		backgroundColor="#050505" actionBarVisible="false">
 	
 	<fx:Script>
 		<![CDATA[
@@ -18,12 +19,13 @@
 			{
 				_data = new ArrayList();
 				
-				var playlistItem:IconItem = new IconItem("Playlists", "", "assets/playlists.png", "");
-				var starredItem:IconItem = new IconItem("Starred", "", "assets/starred.png", "");
-				var whatsNewItem:IconItem = new IconItem("What's New", "", "assets/toplist.png", "");
-				var accountItem:IconItem = new IconItem("Account", "", "assets/account.png", "");
-				var searchItem:IconItem = new IconItem("Search", "", "assets/search.png", "");
-				var playingItem:IconItem = new IconItem("Playing", "", "assets/queue.png", "");
+				var playlistItem:IconItem = new IconItem("Spotify", "", "assets/playlists.png", "");
+				var playingItem:IconItem =  new IconItem("Youtube", "", "assets/queue.png", "");
+				var starredItem:IconItem =  new IconItem("Deezer", "", "assets/starred.png", "");
+				var accountItem:IconItem =  new IconItem("Last.fm", "", "assets/account.png", "");
+				var whatsNewItem:IconItem = new IconItem("iTunes", "", "assets/toplist.png", "");
+				var searchItem:IconItem =   new IconItem("Local", "", "assets/search.png", "");
+				
 				
 				_data.addItem(playlistItem);
 				_data.addItem(starredItem);
@@ -52,7 +54,7 @@
 						case "Search":
 							navigator.pushView(SearchScreen);
 							break;
-						case "Playing":
+						case "Youtube":
 							navigator.pushView(PlayingScreen);
 							break;
 					}
@@ -66,7 +68,9 @@
 			height="100%" width="100%"
 			itemRenderer="com.dbraillon.pocspotifymobile.renderers.IconItemRenderer"
 			dataProvider="{_data}"
-			click="menuList_clickHandler(event)">
+			click="menuList_clickHandler(event)"
+			contentBackgroundColor="#ffffff"
+			alternatingItemColors="[#e6e6e6]">
 		
 	</s:List>
 	

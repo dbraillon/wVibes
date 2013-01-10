@@ -34,13 +34,15 @@ package com.dbraillon.pocspotifymobile.connections
 			public static var DATA_RECEIVED_EVENT : String = "response_search_event";
 			
 			// type de donnees recu
-			public static var SEARCH_RESULT_BEGIN_DATA : String = "<results>";
-			public static var SEARCH_RESULT_END_DATA   : String = "</results>";
+			public static var SEARCH_RESULT_BEGIN_DATA  : String = "<results>";
+			public static var SEARCH_RESULT_END_DATA    : String = "</results>";
+			public static var PLAYING_RESULT_BEGIN_DATA : String = "<playings>";
+			public static var PLAYING_RESULT_END_DATA 	: String = "</playings>";
 		
 		// --->
 		
 		private var _isConnected:Boolean;
-		private var _address:String = "10.18.18.134";
+		private var _address:String = "10.18.244.31";
 		private var _port:int = 1338;
 		
 		private var _parentsEventDispatcher:Array;
@@ -123,6 +125,19 @@ package com.dbraillon.pocspotifymobile.connections
 			_connection.sendCommand(command);
 		}
 		
+		public function sendLoadMusic(uri:String):void
+		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "sendLoadMusic");
+		}
+		
+		public function askPlayingMusic():void
+		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "sendPlayingMusic");
+			
+			var command:Command = new Command(Command.PLAYER_RECIPIENT, Command.PLAYING_METHOD, new Array());
+			_connection.sendCommand(command);
+		}
+		
 		
 		/*
 		 * private functions
@@ -152,6 +167,12 @@ package com.dbraillon.pocspotifymobile.connections
 				return true;
 			}
 			
+			if(response.indexOf(PLAYING_RESULT_BEGIN_DATA) >= 0)
+			{
+				_currentResponseType = PLAYING_RESULT_BEGIN_DATA;
+				return true;
+			}
+			
 			return false;
 		}
 		
@@ -162,6 +183,14 @@ package com.dbraillon.pocspotifymobile.connections
 			if(_currentResponseType == SEARCH_RESULT_BEGIN_DATA)
 			{
 				if(response.indexOf(SEARCH_RESULT_END_DATA) >= 0)
+				{
+					return true;
+				}
+			}
+			
+			if(_currentResponseType == PLAYING_RESULT_BEGIN_DATA)
+			{
+				if(response.indexOf(PLAYING_RESULT_END_DATA) >= 0)
 				{
 					return true;
 				}

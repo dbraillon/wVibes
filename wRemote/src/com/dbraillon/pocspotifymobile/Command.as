@@ -19,6 +19,8 @@ package com.dbraillon.pocspotifymobile
 		public static var TRACK_METHOD    : String = "TRACK";
 		public static var WHATSNEW_METHOD : String = "WHATSNEW";
 		
+		public static var PLAYING_METHOD  : String = "PLAYING";
+		
 		
 		private var _recipient:String;
 		private var _method:String;

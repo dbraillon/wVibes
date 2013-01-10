@@ -1,48 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark"
-		title="Now Playing">
+		title="Now Playing"
+		preinitialize="playing_preinitializeHandler(event)"
+		creationComplete="playing_creationCompleteHandler(event)"
+		activate="playing_activateHandler(event)"
+		backgroundColor="#050505" actionBarVisible="false">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.core.BitmapAsset;
+			import mx.events.FlexEvent;
+			
+			
+			[Embed(source="assets/brunomars.jpg")]
+			[Bindable]
+			private var _exampleImage:Class;
+			
+			[Bindable]
+			private var _albumImage:Bitmap;
+			[Bindable]
+			private var _trackData:XML;
+			
+			
+			protected function playing_preinitializeHandler(event:FlexEvent):void
+			{
+				_trackData = new XML();
+			}
+			
+			protected function playing_creationCompleteHandler(event:FlexEvent):void
+			{
+				showUIExample();
+			}
+			
+			protected function playing_activateHandler(event:Event):void
+			{
+				// demande la chanson qui se joue et l'affiche
+			}
+			
+			private function showUIExample():void
+			{
+				_trackData = 
+					<playingTrack>
+						<track>
+							<title>Locked Out Of Heaven</title>
+							<album>Locked Out Of Heaven</album>
+							<artist>Brunos Mars</artist>
+							<playlist>Artists Definition</playlist>
+						</track>
+					</playingTrack>
+					
+				var image:BitmapAsset = new _exampleImage() as BitmapAsset;
+				albumImage.source = image;
+			}
+			
+			protected function returnButton_clickHandler(event:MouseEvent):void
+			{
+				navigator.popView();
+			}
+			
+		]]>
+	</fx:Script>
 	
 	<s:VGroup height="100%" width="100%">
-		<s:Image id="titleImage"
-				 height="50%" width="100%"
-				 horizontalAlign="center"
-				 source="assets/David-Guetta-She-Wolf.jpg"/>
+		
+		<s:HGroup height="30" width="100%" gap="0">
+			
+			<s:Button id="returnButton" click="returnButton_clickHandler(event)"
+					  skinClass="com.dbraillon.pocspotifymobile.skins.ReturnButtonSkin"/>
+			
+			<s:VGroup height="100%" width="100%" paddingTop="5" paddingLeft="30">
+				
+				<s:Label text="EN COURS PLAYLIST" fontSize="6" color="#555555"
+						 width="100%" height="25%"/>
+				
+				<s:Label text="{_trackData.track[0].title}" fontSize="10" color="#e9e9e9"
+						 width="100%" height="75%"/>
+			
+			</s:VGroup>
+			
+			<s:Button id="queueButton"
+					  skinClass="com.dbraillon.pocspotifymobile.skins.QueueButtonSkin"/>
+			
+		</s:HGroup>
+		
+		<s:Spacer height="2%" width="100%"/>
+		
+		<s:Image id="albumImage" source="{_albumImage}"
+				 height="100%" width="100%" horizontalAlign="center"/>
+		
+		<s:Spacer height="2%" width="100%"/>
 		
 		<s:VGroup height="10%" width="100%" horizontalAlign="center">
-			<s:Label id="titleName"
-					 height="50%" width="100%"
-					 text="She Wolf (Falling into pieces)"/>
-			<s:Label id="titleArtist"
-					 height="50%" width="100%"
-					 text="David Ghetta ft. Sia"/>	
+			
+			<s:Label id="titleName" text="{_trackData.track[0].title}"
+					 width="100%" textAlign="center"
+					 fontSize="18" color="#ffffff"/>
+			
+			<s:Label id="artistAlbum" text="{_trackData.track[0].artist + ' - ' + _trackData.track[0].album}"
+					 width="100%" textAlign="center"
+					 fontSize="8" color="#555555"/>	
+		
 		</s:VGroup>
 		
-		<s:HGroup height="15%" width="100%"
+		<s:Spacer height="2%" width="100%"/>
+		
+		<s:HGroup height="20%" width="100%"
 				  horizontalAlign="center">
+			
 			<s:Button id="shuffleButton"
-					  height="100%" width="19%"
-					  icon=""
-					  skinClass="spark.skins.mobile.ViewMenuItemSkin"/>
+					  skinClass="com.dbraillon.pocspotifymobile.skins.ShuffleButtonSkin"/>
+			
 			<s:Button id="previousButton"
-					  height="100%" width="19%"
-					  icon="assets/previous_blue_icon.png"
-					  skinClass="spark.skins.mobile.ViewMenuItemSkin"/>
+					  skinClass="com.dbraillon.pocspotifymobile.skins.PreviousButtonSkin"/>
+			
 			<s:Button id="playPauseButton"
-					  height="100%" width="24%"
-					  icon="assets/play_blue_icon.png"
-					  skinClass="spark.skins.mobile.ViewMenuItemSkin"/>
+					  skinClass="com.dbraillon.pocspotifymobile.skins.PlayButtonSkin"/>
+			
 			<s:Button id="nextButton"
-					  height="100%" width="19%"
-					  icon="assets/next_blue_icon.png"
-					  skinClass="spark.skins.mobile.ViewMenuItemSkin"/>
+					  skinClass="com.dbraillon.pocspotifymobile.skins.NextButtonSkin"/>
+	
 			<s:Button id="repeatButton"
-					  height="100%" width="19%"
-					  icon=""
-					  skinClass="spark.skins.mobile.ViewMenuItemSkin"/>	
+					  skinClass="com.dbraillon.pocspotifymobile.skins.RepeatButtonSkin"/>
+			
 		</s:HGroup>
+		
+		<s:Spacer height="2%" width="100%"/>
+		
 	</s:VGroup>
-	
-	
 	
 </s:View>

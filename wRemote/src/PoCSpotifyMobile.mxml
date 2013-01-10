@@ -4,7 +4,9 @@
 								  firstView="com.dbraillon.pocspotifymobile.screens.HomeScreen"
 								  splashScreenImage="@Embed('assets/wmusic-v1-final.png')"
 								  splashScreenScaleMode="letterbox"
-								  preinitialize="application_preinitializeHandler(event)">
+								  preinitialize="application_preinitializeHandler(event)"
+								  creationComplete="application_creationCompleteHandler(event)"
+								  >
 	
 	<fx:Script>
 		<![CDATA[
@@ -73,6 +75,11 @@
 				changeActionBar("Connecté", false);
 				
 				navigator.pushView(HomeScreen);
+			}
+			
+			protected function application_creationCompleteHandler(event:FlexEvent):void
+			{
+				actionBar.height = 80;
 			}
 			
 		]]>

@@ -109,7 +109,7 @@
         <fullScreen>false</fullScreen>
         <visible>true</visible>
         <softKeyboardBehavior>none</softKeyboardBehavior>
-        <aspectRatio>landscape</aspectRatio>
+        <aspectRatio>portrait</aspectRatio>
     </initialWindow>
 
 	<!-- We recommend omitting the supportedProfiles element, -->

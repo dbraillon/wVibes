@@ -5,5 +5,7 @@
 					messageField="message"
 					iconField="icon"
 					iconWidth="32"
-					iconHeight="32">
+					iconHeight="32"
+					fontSize="10"
+					height="35">
 </s:IconItemRenderer>
