@@ -64,18 +64,18 @@
 	
 	<s:VGroup height="100%" width="100%">
 		
-		<s:HGroup height="30" width="100%" gap="0">
+		<s:HGroup height="34" width="100%" gap="0">
 			
 			<s:Button id="returnButton" click="returnButton_clickHandler(event)"
 					  skinClass="com.dbraillon.pocspotifymobile.skins.ReturnButtonSkin"/>
 			
 			<s:VGroup height="100%" width="100%" paddingTop="5" paddingLeft="30">
 				
-				<s:Label text="EN COURS PLAYLIST" fontSize="6" color="#555555"
-						 width="100%" height="25%"/>
+				<s:Label text="EN COURS PLAYLIST" fontSize="9" color="#555555"
+						 width="100%" height="35%"/>
 				
-				<s:Label text="{_trackData.track[0].title}" fontSize="10" color="#e9e9e9"
-						 width="100%" height="75%"/>
+				<s:Label text="{_trackData.track[0].title}" fontSize="13" color="#e9e9e9"
+						 width="100%" height="65%"/>
 			
 			</s:VGroup>
 			

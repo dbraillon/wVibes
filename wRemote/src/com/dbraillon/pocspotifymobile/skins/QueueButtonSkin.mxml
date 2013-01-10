@@ -34,6 +34,6 @@
 	<!-- image -->
 	<s:Image source="assets/32x32/queue.png"
 			 width="16" height="16"
-			 left="8" right="8" top="8" bottom="8"/>
+			 left="12" right="12" top="12" bottom="12"/>
 	
 </s:Skin>

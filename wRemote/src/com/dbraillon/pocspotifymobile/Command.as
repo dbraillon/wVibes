@@ -6,6 +6,7 @@ package com.dbraillon.pocspotifymobile
 	{
 		public static var PLAYER_RECIPIENT : String = "PLAYER";
 		public static var SEARCH_RECIPIENT : String = "SEARCH";
+		public static var ACCOUNT_RECIPIENT : String = "ACCOUNT";
 		
 		public static var LOAD_METHOD 	  : String = "LOAD";
 		public static var PLAY_METHOD 	  : String = "PLAY";
@@ -20,6 +21,8 @@ package com.dbraillon.pocspotifymobile
 		public static var WHATSNEW_METHOD : String = "WHATSNEW";
 		
 		public static var PLAYING_METHOD  : String = "PLAYING";
+		
+		public static var LOGIN_METHOD : String = "LOGIN";
 		
 		
 		private var _recipient:String;
@@ -58,7 +61,7 @@ package com.dbraillon.pocspotifymobile
 				}
 				else
 				{
-					s = s.concat(_arguments[i] + ",");
+					s = s.concat(_arguments[i] + "%");
 				}
 			}
 			

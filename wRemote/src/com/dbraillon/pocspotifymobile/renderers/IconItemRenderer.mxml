@@ -6,6 +6,32 @@
 					iconField="icon"
 					iconWidth="32"
 					iconHeight="32"
-					fontSize="10"
-					height="35">
+					fontSize="12"
+					height="100%">
+	
+	<fx:Script>
+		<![CDATA[
+			
+			override public function set data(value:Object):void
+			{
+				super.data = value;
+				
+				if(!data) return;
+				
+				
+				if(data.isTitle)
+				{
+					labelDisplay.setStyle("color", "0x33aa33");
+					labelDisplay.setStyle("fontSize", "10");
+				}
+				else
+				{
+					//labelDisplay.setStyle("color", "0x050505");
+					labelDisplay.setStyle("fontSize", "12");
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
 </s:IconItemRenderer>

@@ -6,13 +6,16 @@ package com.dbraillon.pocspotifymobile.models
 		private var _message:String;
 		private var _icon:String;
 		private var _type:String;
+		private var _isTitle:Boolean;
 		
-		public function IconItem(label:String, message:String, icon:String, type:String)
+		public function IconItem(label:String, message:String, icon:String, type:String,
+								 isTitle:Boolean)
 		{
 			_label = label;
 			_message = message;
 			_icon = icon;
 			_type = type;
+			_isTitle = isTitle;
 		}
 
 		public function get label():String
@@ -53,6 +56,16 @@ package com.dbraillon.pocspotifymobile.models
 		public function set type(value:String):void
 		{
 			_type = value;
+		}
+
+		public function get isTitle():Boolean
+		{
+			return _isTitle;
+		}
+
+		public function set isTitle(value:Boolean):void
+		{
+			_isTitle = value;
 		}
 
 

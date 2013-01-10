@@ -7,9 +7,7 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import com.dbraillon.pocspotifymobile.connections.BridgeConnection;
 			import com.dbraillon.pocspotifymobile.models.IconItem;
-			import com.dbraillon.pocspotifymobile.screens.spotify.SpotifyScreen;
 			
 			import mx.collections.ArrayList;
 			import mx.events.FlexEvent;
@@ -21,13 +19,13 @@
 			{
 				_listData = new ArrayList();
 				
-				var playlistItem:IconItem = new IconItem("SPOTIFY", "", "", "", false);
-				var playingItem:IconItem =  new IconItem("YOUTUBE", "", "", "", false);
-				var starredItem:IconItem =  new IconItem("DEEZER", "", "", "", false);
-				var accountItem:IconItem =  new IconItem("LAST.FM", "", "", "", false);
-				var whatsNewItem:IconItem = new IconItem("ITUNES", "", "", "", false);
-				var searchItem:IconItem =   new IconItem("LOCAL", "", "", "", false);
-				Icon
+				var playlistItem:IconItem = new IconItem("SEARCH", "", "", "", false);
+				var playingItem:IconItem =  new IconItem("QUEUE", "", "", "", false);
+				var starredItem:IconItem =  new IconItem("PLAYLIST", "", "", "", false);
+				var accountItem:IconItem =  new IconItem("WHAT'S NEW", "", "", "", false);
+				var whatsNewItem:IconItem = new IconItem("STARRED", "", "", "", false);
+				var searchItem:IconItem =   new IconItem("SETTINGS", "", "", "", false);
+				
 				_listData.addItem(playlistItem);
 				_listData.addItem(playingItem);
 				_listData.addItem(starredItem);
@@ -44,32 +42,32 @@
 					
 					switch(selectedItem.label)
 					{
-						case "SPOTIFY":
-							navigator.pushView(SpotifyScreen);
+						case "SEARCH":
+							navigator.pushView(SearchScreen);
 							break;
 						
-						case "YOUTUBE":
-							BridgeConnection.getInstance().sendLoginPassword("othane", "TestRaphio");
+						case "QUEUE":
+							navigator.pushView(PlayingScreen);
 							break;
 						
-						case "DEEZER":
+						case "PLAYLIST":
 							break;
 						
-						case "LAST.FM":
+						case "WHAT'S NEW":
 							break;
 						
-						case "ITUNES":
+						case "STARRED":
 							break;
 						
-						case "LOCAL":
+						case "SETTINGS":
 							break;
 					}
 				}
 			}
 			
-			protected function quitButton_clickHandler(event:MouseEvent):void
+			protected function returnButton_clickHandler(event:MouseEvent):void
 			{
-				// arrête l'application
+				navigator.popView();
 			}
 			
 		]]>
@@ -79,16 +77,16 @@
 		
 		<s:HGroup height="34" width="100%" gap="0">
 			
-			<s:Button id="quitButton" click="quitButton_clickHandler(event)"
-					  skinClass="com.dbraillon.pocspotifymobile.skins.QuitButtonSkin"/>
+			<s:Button id="returnButton" click="returnButton_clickHandler(event)"
+					  skinClass="com.dbraillon.pocspotifymobile.skins.ReturnButtonSkin"/>
 			
-			<s:VGroup height="100%" width="100%" paddingTop="6" paddingLeft="30">
+			<s:VGroup height="100%" width="100%" paddingTop="5" paddingLeft="30">
 				
-				<s:Label text="WVIBES" fontSize="8" color="0x777777" fontWeight="bold"
-						 width="100%" height="40%"/>
+				<s:Label text="SPOTIFY" fontSize="9" color="#555555"
+						 width="100%" height="35%"/>
 				
-				<s:Label text="Menu" fontSize="13" color="0xEEEEEE" fontWeight="bold"
-						 width="100%" height="60%"/>
+				<s:Label text="Menu" fontSize="13" color="#e9e9e9"
+						 width="100%" height="65%"/>
 				
 			</s:VGroup>
 			
@@ -102,8 +100,8 @@
 				itemRenderer="com.dbraillon.pocspotifymobile.renderers.IconItemRenderer"
 				dataProvider="{_listData}"
 				click="menuList_clickHandler(event)"
-				contentBackgroundColor="0xFFFFFF" alternatingItemColors="[0xEEEEEE, 0xE0E0E0]"
-				color="0x101010" borderColor="0x101010" fontWeight="bold">
+				contentBackgroundColor="#e9e9e9" alternatingItemColors="[#e9e9e9, #e0e0e0]"
+				color="#050505" borderColor="#555555">
 			
 		</s:List>
 		

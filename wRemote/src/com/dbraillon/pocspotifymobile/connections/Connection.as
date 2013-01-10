@@ -117,6 +117,7 @@ package com.dbraillon.pocspotifymobile.connections
 		
 		public function sendCommand(command:Command):void
 		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "isConnected ? " + _connectionSocket.connected);
 			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "sendCommand(" + command.toString() + ")");
 			
 			// envoi une commande au client distant

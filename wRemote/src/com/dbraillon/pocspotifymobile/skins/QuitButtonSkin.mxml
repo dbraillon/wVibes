@@ -32,7 +32,7 @@
 	</s:Rect>
 	
 	<!-- image -->
-	<s:Image source="assets/32x32/return.png"
+	<s:Image source="assets/32x32/quit.png"
 			 width="20" height="20"
 			 left="10" right="10" top="10" bottom="10"/>
 	

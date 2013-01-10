@@ -42,7 +42,7 @@ package com.dbraillon.pocspotifymobile.connections
 		// --->
 		
 		private var _isConnected:Boolean;
-		private var _address:String = "10.18.244.31";
+		private var _address:String = "10.18.18.153";
 		private var _port:int = 1338;
 		
 		private var _parentsEventDispatcher:Array;
@@ -135,6 +135,14 @@ package com.dbraillon.pocspotifymobile.connections
 			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "sendPlayingMusic");
 			
 			var command:Command = new Command(Command.PLAYER_RECIPIENT, Command.PLAYING_METHOD, new Array());
+			_connection.sendCommand(command);
+		}
+		
+		public function sendLoginPassword(login:String, password:String):void
+		{
+			Log.write(Log.LEVEL_2, flash.utils.getQualifiedClassName(this), "sendLoginPassword");
+			
+			var command:Command = new Command(Command.ACCOUNT_RECIPIENT, Command.LOGIN_METHOD, new Array("othane", "TestRaphio"));
 			_connection.sendCommand(command);
 		}
 		
