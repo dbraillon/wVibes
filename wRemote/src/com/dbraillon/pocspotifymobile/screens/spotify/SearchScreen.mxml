@@ -3,12 +3,12 @@
 		xmlns:s="library://ns.adobe.com/flex/spark" title="Recherche"
 		preinitialize="search_preinitializeHandler(event)"
 		creationComplete="search_creationCompleteHandler(event)"
-		backgroundColor="#050505" actionBarVisible="false">
+		backgroundColor="{ColorsConstant.darkGrey}" actionBarVisible="false">
 	
 	<fx:Script>
 		<![CDATA[
-			import spark.components.List;
 			import com.dbraillon.pocspotifymobile.connections.BridgeConnection;
+			import com.dbraillon.pocspotifymobile.constants.ColorsConstant;
 			import com.dbraillon.pocspotifymobile.events.DataReceivedEvent;
 			import com.dbraillon.pocspotifymobile.models.IconItem;
 			
@@ -16,6 +16,7 @@
 			import mx.events.FlexEvent;
 			
 			import spark.components.Label;
+			import spark.components.List;
 			import spark.events.GridEvent;
 			
 			
@@ -78,7 +79,7 @@
 	</fx:Script>
 	
 	
-	<s:VGroup width="100%" height="100%" horizontalAlign="center">
+	<s:VGroup width="100%" height="100%">
 		
 		<s:HGroup height="34" width="100%" gap="0">
 			
@@ -89,7 +90,8 @@
 				
 				<s:TextInput id="searchContent" width="100%" height="100%"
 							 skinClass="com.dbraillon.pocspotifymobile.skins.TextInputSkin"
-							 color="#050505" prompt="Recherche :"/>
+							 color="{ColorsConstant.darkGrey}" prompt="Recherche :"
+							 fontSize="12"/>
 				
 			</s:VGroup>
 			
@@ -98,15 +100,29 @@
 			
 		</s:HGroup>
 		
-		<s:List id="resultList"
-				height="100%" width="100%"
-				itemRenderer="com.dbraillon.pocspotifymobile.renderers.IconItemRenderer"
-				dataProvider="{_data}"
-				click="resultList_clickHandler(event)"
-				contentBackgroundColor="#e9e9e9"
-				color="#050505" borderColor="#555555">
+		<s:Group width="100%" height="100%">
+		
+			<s:Rect width="100%" height="100%">
+				<s:fill>
+					<s:SolidColor color="{ColorsConstant.white}"/>
+				</s:fill>
+			</s:Rect>
 			
-		</s:List>
+			<s:VGroup width="100%" height="100%" horizontalAlign="center">
+				
+				<s:List id="resultList"
+						height="100%" width="90%"
+						itemRenderer="com.dbraillon.pocspotifymobile.renderers.IconItemRenderer"
+						dataProvider="{_data}" fontWeight="bold" 
+						click="resultList_clickHandler(event)"
+						contentBackgroundColor="{ColorsConstant.white}"
+						color="{ColorsConstant.darkGrey}" borderColor="{ColorsConstant.darkGrey}">
+					
+				</s:List>
+				
+			</s:VGroup>
+			
+		</s:Group>
 		
 	</s:VGroup>
 	

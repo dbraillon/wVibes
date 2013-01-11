@@ -27,6 +27,7 @@ package com.dbraillon.pocspotifymobile.connections
 		private var _username:String;
 		private var _password:String;
 		private var _connected:Boolean;
+		private var _connecting:Boolean;
 		
 		public function get username():String
 		{
@@ -57,5 +58,16 @@ package com.dbraillon.pocspotifymobile.connections
 		{
 			_connected = value;
 		}
+
+		public function get connecting():Boolean
+		{
+			return _connecting;
+		}
+
+		public function set connecting(value:Boolean):void
+		{
+			_connecting = value;
+		}
+
 	}
 }

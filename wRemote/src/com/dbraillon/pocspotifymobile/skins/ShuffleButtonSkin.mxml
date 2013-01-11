@@ -5,6 +5,11 @@
 	<fx:Metadata>
 		[HostComponent("spark.components.Button")]
 	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import com.dbraillon.pocspotifymobile.constants.ColorsConstant;
+		]]>
+	</fx:Script>
 	
 	<!-- states -->
 	<s:states>
@@ -24,10 +29,10 @@
 			bottom="0" left="0" height="32" width="32"
 			verticalCenter="0" horizontalCenter="0">
 		<s:fill>
-			<s:SolidColor color="0x050505" color.down="0x555555"/>
+			<s:SolidColor color="{ColorsConstant.darkGrey}" color.down="{ColorsConstant.mediumGrey}"/>
 		</s:fill>
 		<s:stroke>
-			<s:SolidColorStroke color="0x050505" weight="0" />
+			<s:SolidColorStroke color="{ColorsConstant.darkGrey}" weight="0" />
 		</s:stroke>
 	</s:Rect>
 	

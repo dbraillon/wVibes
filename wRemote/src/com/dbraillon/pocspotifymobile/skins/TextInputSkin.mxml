@@ -10,6 +10,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import com.dbraillon.pocspotifymobile.constants.ColorsConstant;
 			private static const focusExclusions:Array = ["textDisplay"];
 			override public function get focusSkinExclusions():Array { 
 				return focusExclusions;
@@ -34,14 +35,14 @@
 	<s:Rect id="background" left="1" right="1" top="1" bottom="1" 
 			radiusX="3" radiusY="3">
 		<s:fill>
-			<s:SolidColor id="bgFill" color="0xe9e9e9" />
+			<s:SolidColor id="bgFill" color="{ColorsConstant.lightGrey}" />
 		</s:fill>
 	</s:Rect>
 	
 	<s:Rect id="shadow" left="1" top="1" right="1" height="1" 
 			radiusX="3" radiusY="3">
 		<s:fill>
-			<s:SolidColor color="0x000000" alpha="0.12" />
+			<s:SolidColor color="{ColorsConstant.black}" alpha="0.12" />
 		</s:fill>
 	</s:Rect> 
 	

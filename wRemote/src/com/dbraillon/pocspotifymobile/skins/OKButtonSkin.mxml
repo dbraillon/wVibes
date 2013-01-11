@@ -26,7 +26,7 @@
 	
 	<!-- border and fill -->
 	<s:Rect id="rect" radiusX="0" radiusY="0" top="0" right="0" 
-			bottom="0" left="0" height="16" width="16"
+			bottom="0" left="0" height="32" width="32"
 			verticalCenter="0" horizontalCenter="0">
 		<s:fill>
 			<s:SolidColor color="{ColorsConstant.darkGrey}" color.down="{ColorsConstant.mediumGrey}"/>
@@ -37,8 +37,8 @@
 	</s:Rect>
 	
 	<!-- image -->
-	<s:Image source="assets/32x32/queue.png"
-			 width="16" height="16"
-			 left="12" right="12" top="12" bottom="12"/>
+	<s:Image source="assets/64x64/ok.png"
+			 width="32" height="32"
+			 left="8" right="8" top="8" bottom="8"/>
 	
 </s:Skin>
