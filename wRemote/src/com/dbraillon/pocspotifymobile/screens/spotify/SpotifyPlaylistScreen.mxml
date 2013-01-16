@@ -1,14 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" title="SpotifyPlaylistScreen"
-		actionBarVisible="false" backgroundColor="{ColorsConstant.darkGrey}">
+		actionBarVisible="false" backgroundColor="{ColorsConstant.darkGrey}"
+		viewActivate="view_viewActivateHandler(event)">
 	<fx:Script>
 		<![CDATA[
 			import com.dbraillon.pocspotifymobile.constants.ColorsConstant;
+			import com.dbraillon.pocspotifymobile.models.IconItem;
+			
+			import mx.collections.ArrayList;
+			import mx.events.FlexEvent;
+			
+			import spark.events.ViewNavigatorEvent;
 			
 			protected function returnButton_clickHandler(event:MouseEvent):void
 			{
 				navigator.popView();
+			}
+			
+			protected function view_viewActivateHandler(event:ViewNavigatorEvent):void
+			{
+				resultList.dataProvider = new ArrayList();
+				showUIExample();
+			}
+			
+			private function showUIExample():void
+			{
+				var arrayList:ArrayList = new ArrayList();
+				
+				arrayList.addItem(new IconItem("Starred", "10 titres", "", "", false));
+				arrayList.addItem(new IconItem("Artists Definition", "224 titres", "", "", false));
+				arrayList.addItem(new IconItem("MJ en vrac", "34 titres", "", "", false));
+				arrayList.addItem(new IconItem("Trip Hop en vrac", "11 titres", "", "", false));
+				
+				resultList.dataProvider = arrayList;
+			}
+			
+			protected function resultList_clickHandler(event:MouseEvent):void
+			{
+				
 			}
 			
 		]]>
@@ -35,6 +65,29 @@
 					  skinClass="com.dbraillon.pocspotifymobile.skins.QueueButtonSkin"/>
 			
 		</s:HGroup>
+		
+		<s:Group width="100%" height="100%">
+			
+			<s:Rect width="100%" height="100%">
+				<s:fill>
+					<s:SolidColor color="{ColorsConstant.white}"/>
+				</s:fill>
+			</s:Rect>
+			
+			<s:VGroup width="100%" height="100%" horizontalAlign="center">
+				
+				<s:List id="resultList"
+						height="100%" width="90%"
+						itemRenderer="com.dbraillon.pocspotifymobile.renderers.IconItemRenderer"
+						fontWeight="bold" click="resultList_clickHandler(event)"
+						contentBackgroundColor="{ColorsConstant.white}"
+						color="{ColorsConstant.darkGrey}" borderColor="{ColorsConstant.darkGrey}">
+					
+				</s:List>
+				
+			</s:VGroup>
+			
+		</s:Group>
 		
 	</s:VGroup>
 	

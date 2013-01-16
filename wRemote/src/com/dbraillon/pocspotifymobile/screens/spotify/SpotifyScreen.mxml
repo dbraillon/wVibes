@@ -42,11 +42,11 @@
 					switch(selectedItem.label)
 					{
 						case "SEARCH":
-							navigator.pushView(SearchScreen);
+							navigator.pushView(SpotifySearchScreen);
 							break;
 						
 						case "QUEUE":
-							navigator.pushView(QueueScreen);
+							navigator.pushView(SpotifyQueueScreen);
 							break;
 						
 						case "PLAYLISTS":
