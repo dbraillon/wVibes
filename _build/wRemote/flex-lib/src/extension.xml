@@ -1,0 +1,13 @@
+<extension xmlns="http://ns.adobe.com/air/extension/3.1">
+	<id>com.dbraillon.broadcast</id>
+	<versionNumber>1</versionNumber>
+	<platforms>
+		<platform name="Android-ARM">
+			<applicationDeployment>
+				<nativeLibrary>broadcast.jar</nativeLibrary>
+				<initializer>com.dbraillon.broadcast.BroadcastExtension</initializer>
+				<finalizer>com.dbraillon.broadcast.BroadcastExtension</finalizer>
+			</applicationDeployment>
+		</platform>
+	</platforms>
+</extension>
