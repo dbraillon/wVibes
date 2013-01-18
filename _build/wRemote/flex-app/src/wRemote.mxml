@@ -1,11 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:TabbedViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
-								  xmlns:s="library://ns.adobe.com/flex/spark" applicationDPI="160">
-	<s:ViewNavigator label="Search" width="100%" height="100%" firstView="views.SearchView"/>
-	<s:ViewNavigator label="Playlists" width="100%" height="100%" firstView="views.PlaylistsView"/>
-	<s:ViewNavigator label="News" width="100%" height="100%" firstView="views.NewsView"/>
-	<s:ViewNavigator label="More" width="100%" height="100%" firstView="views.MoreView"/>
+								  xmlns:s="library://ns.adobe.com/flex/spark" applicationDPI="160"
+								  preinitialize="wRemote_preinitializeHandler(event)"
+								  creationComplete="wRemote_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import views.PlayView;
+			
+			protected function wRemote_preinitializeHandler(event:FlexEvent):void
+			{
+				searchNavigator.addEventListener("search_home", homeButtonBar_clickHandler);
+				playlistsNavigator.addEventListener("playlists_home", homeButtonBar_clickHandler);
+				newsNavigator.addEventListener("news_home", homeButtonBar_clickHandler);
+				moreNavigator.addEventListener("more_home", homeButtonBar_clickHandler);
+			}
+			
+			protected function wRemote_creationCompleteHandler(event:FlexEvent):void
+			{
+				tabbedNavigator.tabBar.dataGroup.getElementAt(0).visible = false;
+				tabbedNavigator.tabBar.dataGroup.getElementAt(0).includeInLayout = false;
+			}
+			
+			protected function homeButtonBar_clickHandler(event:Event):void
+			{
+				tabbedNavigator.selectedIndex = 0;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:ViewNavigator id="loginNavigator" label="Login" width="100%" height="100%" firstView="views.LoginView"/>
+	<s:ViewNavigator id="searchNavigator" label="Search" width="100%" height="100%" firstView="views.SearchView"/>
+	<s:ViewNavigator id="playlistsNavigator" label="Playlists" width="100%" height="100%" firstView="views.PlaylistsView"/>
+	<s:ViewNavigator id="newsNavigator" label="News" width="100%" height="100%" firstView="views.NewsView"/>
+	<s:ViewNavigator id="moreNavigator" label="More" width="100%" height="100%" firstView="views.MoreView"/>
+	
 	<fx:Declarations>
 		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
 	</fx:Declarations>
+	
 </s:TabbedViewNavigatorApplication>

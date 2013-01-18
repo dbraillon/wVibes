@@ -20,9 +20,7 @@
 	<!-- Used as the filename for the application. Required. -->
 	<filename>wRemote</filename>
 
-	<extensions>
-		<extensionID>com.dbraillon.broadcast</extensionID>
-	</extensions>
+	
 
 	<!-- The name that is displayed in the AIR application installer. 
 	May have multiple values for each language. See samples or xsd schema file. Optional. -->

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" title="Login"
+		actionBarVisible="false" tabBarVisible="false">
+	
+	<fx:Script>
+		<![CDATA[
+			import connections.ServerConnection;
+			protected function sendInformationButton_clickHandler(event:MouseEvent):void
+			{
+				var login:String = loginInput.text;
+				var password:String = passwordInput.text;
+				
+				ServerConnection.getInstance().addEventDispatcher(this);
+				addEventListener(ServerConnection.SIGNIN_SUCCED, serverConnection_signinSuccess);
+				addEventListener(ServerConnection.SIGNIN_FAILED, serverConnection_signinFail);
+				ServerConnection.getInstance().signinRequest(login, password);
+			}
+			
+			protected function serverConnection_signinSuccess(event:Event):void
+			{
+				removeEventListener(ServerConnection.SIGNIN_SUCCED, serverConnection_signinSuccess);
+				removeEventListener(ServerConnection.SIGNIN_FAILED, serverConnection_signinFail);
+				
+				navigator.pushView(PlayView);
+			}
+			
+			protected function serverConnection_signinFail(event:Event):void
+			{
+				removeEventListener(ServerConnection.SIGNIN_SUCCED, serverConnection_signinSuccess);
+				removeEventListener(ServerConnection.SIGNIN_FAILED, serverConnection_signinFail);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
+	</fx:Declarations>
+	
+	<s:HGroup left="20" right="20" height="100%" horizontalAlign="center" verticalAlign="middle">
+		
+		<s:VGroup width="100%">
+			
+			<s:TextInput id="loginInput" prompt="Login" width="100%"/>
+			<s:TextInput id="passwordInput" prompt="Password" width="100%" displayAsPassword="true"/>
+			
+		</s:VGroup>
+		
+		<s:Button id="sendInformationButton" label="Send"
+				  click="sendInformationButton_clickHandler(event)"/>	
+	</s:HGroup>
+	
+	
+	
+	
+</s:View>

@@ -4,13 +4,12 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import com.dbraillon.broadcast.BroadcastInterface;
 			
-			protected function sendBroadcastButton_clickHandler(event:MouseEvent):void
+			protected function homeButton_clickHandler(event:MouseEvent):void
 			{
-				var bi:BroadcastInterface = new BroadcastInterface();
-				bi.send("salut !", 1338);
+				navigator.dispatchEvent(new Event("more_home"));
 			}
+			
 		]]>
 	</fx:Script>
 	
@@ -18,6 +17,9 @@
 		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
 	</fx:Declarations>
 	
-	<s:Button id="sendBroadcastButton" label="Send UDP Broadcast" click="sendBroadcastButton_clickHandler(event)"/>
+	<s:actionContent>
+		<s:Button id="homeButton" label="Home" height="100%"
+				  click="homeButton_clickHandler(event)"/>
+	</s:actionContent>
 	
 </s:View>

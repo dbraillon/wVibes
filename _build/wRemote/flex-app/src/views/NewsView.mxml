@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" title="News">
+	
+	<fx:Script>
+		<![CDATA[
+			
+			protected function homeButton_clickHandler(event:MouseEvent):void
+			{
+				navigator.dispatchEvent(new Event("news_home"));
+			}
+			
+		]]>
+	</fx:Script>
+	
 	<fx:Declarations>
 		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
 	</fx:Declarations>
+	
+	<s:actionContent>
+		<s:Button id="homeButton" label="Home" height="100%"
+				  click="homeButton_clickHandler(event)"/>
+	</s:actionContent>
+	
 </s:View>
