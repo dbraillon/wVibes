@@ -1,35 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" title="Login"
-		actionBarVisible="false" tabBarVisible="false">
+		actionBarVisible="false" tabBarVisible="false"
+		preinitialize="view_preinitializeHandler(event)">
 	
 	<fx:Script>
 		<![CDATA[
 			import connections.ServerConnection;
+			
+			import mx.events.FlexEvent;
+			
+			private var serverConnection:ServerConnection;
+			
+			protected function view_preinitializeHandler(event:FlexEvent):void
+			{
+				serverConnection = ServerConnection.getInstance();
+			}
+			
 			protected function sendInformationButton_clickHandler(event:MouseEvent):void
 			{
 				var login:String = loginInput.text;
 				var password:String = passwordInput.text;
 				
-				ServerConnection.getInstance().addEventDispatcher(this);
-				addEventListener(ServerConnection.SIGNIN_SUCCED, serverConnection_signinSuccess);
-				addEventListener(ServerConnection.SIGNIN_FAILED, serverConnection_signinFail);
-				ServerConnection.getInstance().signinRequest(login, password);
+				serverConnection.addEventListener(ServerConnection.SIGNIN_SUCCED, serverConnection_signinSuccess);
+				serverConnection.addEventListener(ServerConnection.SIGNIN_FAILED, serverConnection_signinFail);
+				serverConnection.signinRequest(login, password);
 			}
 			
 			protected function serverConnection_signinSuccess(event:Event):void
 			{
-				removeEventListener(ServerConnection.SIGNIN_SUCCED, serverConnection_signinSuccess);
-				removeEventListener(ServerConnection.SIGNIN_FAILED, serverConnection_signinFail);
+				serverConnection.removeEventListener(ServerConnection.SIGNIN_SUCCED, serverConnection_signinSuccess);
+				serverConnection.removeEventListener(ServerConnection.SIGNIN_FAILED, serverConnection_signinFail);
 				
 				navigator.pushView(PlayView);
 			}
 			
 			protected function serverConnection_signinFail(event:Event):void
 			{
-				removeEventListener(ServerConnection.SIGNIN_SUCCED, serverConnection_signinSuccess);
-				removeEventListener(ServerConnection.SIGNIN_FAILED, serverConnection_signinFail);
+				serverConnection.removeEventListener(ServerConnection.SIGNIN_SUCCED, serverConnection_signinSuccess);
+				serverConnection.removeEventListener(ServerConnection.SIGNIN_FAILED, serverConnection_signinFail);
 			}
+			
+			
 			
 		]]>
 	</fx:Script>
