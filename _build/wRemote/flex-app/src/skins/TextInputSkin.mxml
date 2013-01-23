@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("spark.components.TextInput")]
+	</fx:Metadata>
+	
+	<!-- states -->
+	<s:states>
+		<s:State name="disabledWithPrompt" />
+		<s:State name="normalWithPrompt" />
+		<s:State name="disabled" />
+		<s:State name="normal" />
+	</s:states>
+	
+	<!-- SkinParts
+	name=promptDisplay, type=spark.core.IDisplayText, required=false
+	name=textDisplay, type=spark.core.IEditableText, required=false
+	-->
+	
+	<s:Rect left="1" right="1" top="1" bottom="1" minHeight="20" minWidth="40">
+		<s:fill>
+			<s:SolidColor color="0xDADADA"/>
+		</s:fill>
+	</s:Rect>
+	
+	<!-- text -->
+	<s:RichEditableText id="textDisplay"
+						verticalAlign="middle"
+						widthInChars="10"
+						left="1" right="1" top="1" bottom="1"/>
+	
+	<s:Label id="promptDisplay" maxDisplayedLines="1"
+			 verticalAlign="middle" color="0xECECEC"
+			 mouseEnabled="false" mouseChildren="false"
+			 includeIn="normalWithPrompt,disabledWithPrompt" 
+			 includeInLayout="false"/>
+	
+</s:Skin>

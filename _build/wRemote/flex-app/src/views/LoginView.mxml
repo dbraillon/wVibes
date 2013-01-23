@@ -41,8 +41,6 @@
 				serverConnection.removeEventListener(ServerConnection.SIGNIN_FAILED, serverConnection_signinFail);
 			}
 			
-			
-			
 		]]>
 	</fx:Script>
 	
@@ -54,8 +52,10 @@
 		
 		<s:VGroup width="100%">
 			
-			<s:TextInput id="loginInput" prompt="Login" width="100%"/>
-			<s:TextInput id="passwordInput" prompt="Password" width="100%" displayAsPassword="true"/>
+			<s:TextInput id="loginInput" prompt="Login" width="100%" height="30"
+						 skinClass="skins.TextInputSkin"/>
+			<s:TextInput id="passwordInput" prompt="Password" width="100%" height="30"
+						 displayAsPassword="true" skinClass="skins.TextInputSkin"/>
 			
 		</s:VGroup>
 		

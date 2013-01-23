@@ -18,8 +18,12 @@
 	</fx:Declarations>
 	
 	<s:actionContent>
+		
 		<s:Button id="homeButton" label="Home" height="100%"
 				  click="homeButton_clickHandler(event)"/>
+		
 	</s:actionContent>
+	
+	
 	
 </s:View>
