@@ -20,12 +20,16 @@
 	name=labelDisplay, type=spark.core.IDisplayText, required=false
 	-->
 	
-	<s:Rect left="1" right="1" top="1" bottom="1" minHeight="40" minWidth="40">
+	<s:Rect left="1" right="1" top="1" bottom="1" minHeight="40" minWidth="60">
 		<s:fill>
-			<s:SolidColor color="0xDADADA"/>
+			<s:SolidColor color="0xDADADA" color.down="0xD0D0D0" color.disabled="0xEAEAEA"/>
 		</s:fill>
+		<s:stroke>
+			<s:SolidColorStroke color="0x505050"/>
+		</s:stroke>
 	</s:Rect>
 	
-	
+	<s:Label id="labelButton" text="{hostComponent.label}" top="2" left="20" right="20"
+			 height="{hostComponent.height}" verticalAlign="middle"/>
 	
 </s:Skin>

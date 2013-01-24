@@ -14,31 +14,59 @@
 			
 			protected function view_preinitializeHandler(event:FlexEvent):void
 			{
+				trace("-loginViewPreinitialize : RETRIEVE SERVER CONNECTION INSTANCE");
+				
 				serverConnection = ServerConnection.getInstance();
 			}
 			
 			protected function sendInformationButton_clickHandler(event:MouseEvent):void
 			{
+				trace("-loginViewSendInformation : SENDING SIGNIN REQUEST...");
+				
 				var login:String = loginInput.text;
 				var password:String = passwordInput.text;
 				
 				serverConnection.addEventListener(ServerConnection.SIGNIN_SUCCED, serverConnection_signinSuccess);
 				serverConnection.addEventListener(ServerConnection.SIGNIN_FAILED, serverConnection_signinFail);
 				serverConnection.signinRequest(login, password);
+				
+				trace("-loginViewSendInformation : WAITING FOR RESPONSE...");
+				
+				errorLabel_change(false, "");
+				sendInformationButton.enabled = false;
 			}
 			
 			protected function serverConnection_signinSuccess(event:Event):void
 			{
+				trace("-loginViewSigninSucced : PUSH PLAY VIEW");
+				
 				serverConnection.removeEventListener(ServerConnection.SIGNIN_SUCCED, serverConnection_signinSuccess);
 				serverConnection.removeEventListener(ServerConnection.SIGNIN_FAILED, serverConnection_signinFail);
+				
+				sendInformationButton.enabled = true;
 				
 				navigator.pushView(PlayView);
 			}
 			
 			protected function serverConnection_signinFail(event:Event):void
 			{
+				trace("-loginViewSigninFailed : DISPLAY ERROR MESSAGE");
+				
 				serverConnection.removeEventListener(ServerConnection.SIGNIN_SUCCED, serverConnection_signinSuccess);
 				serverConnection.removeEventListener(ServerConnection.SIGNIN_FAILED, serverConnection_signinFail);
+				
+				errorLabel_change(true, "Le serveur ne répond pas");
+				sendInformationButton.enabled = true;
+			}
+			
+			private function errorLabel_change(displayed:Boolean, text:String):void
+			{
+				trace("-loginViewErrorLabel : DISPLAYED " + displayed + " TEXT " + text);
+				
+				errorLabel.visible = displayed;
+				errorLabel.includeInLayout = displayed;
+				
+				errorLabel.text = text;
 			}
 			
 		]]>
@@ -51,6 +79,9 @@
 	<s:VGroup left="20" right="20" height="100%" width="100%"
 			  horizontalAlign="center" verticalAlign="middle">
 		
+		<s:Label id="errorLabel" visible="false" includeInLayout="false"
+				 fontWeight="bold" color="0xFF1010"/>
+		
 		<s:TextInput id="loginInput" prompt="Email ou Identifiant..." width="100%" height="40"
 					 skinClass="skins.TextInputSkin" fontWeight="bold" color="0x505050"/>
 		
@@ -58,8 +89,8 @@
 					 skinClass="skins.TextInputSkin" fontWeight="bold" color="0x505050"
 					 displayAsPassword="true"/>
 		
-		<s:Button id="sendInformationButton" label="Send"
-				  skinClass="skins.ButtonSkin" width="40" height="40"
+		<s:Button id="sendInformationButton" label="Se connecter"
+				  skinClass="skins.ButtonSkin" height="40"
 				  click="sendInformationButton_clickHandler(event)"/>
 		
 	</s:VGroup>
