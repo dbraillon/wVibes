@@ -48,22 +48,19 @@
 		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
 	</fx:Declarations>
 	
-	<s:HGroup left="20" right="20" height="100%" horizontalAlign="center" verticalAlign="middle">
+	<s:VGroup left="20" right="20" height="100%" width="100%"
+			  horizontalAlign="center" verticalAlign="middle">
 		
-		<s:VGroup width="100%">
-			
-			<s:TextInput id="loginInput" prompt="Login" width="100%" height="30"
-						 skinClass="skins.TextInputSkin"/>
-			<s:TextInput id="passwordInput" prompt="Password" width="100%" height="30"
-						 displayAsPassword="true" skinClass="skins.TextInputSkin"/>
-			
-		</s:VGroup>
+		<s:TextInput id="loginInput" prompt="Email ou Identifiant..." width="100%" height="40"
+					 skinClass="skins.TextInputSkin" fontWeight="bold" color="0x505050"/>
+		
+		<s:TextInput id="passwordInput" prompt="Mot de passe..." width="100%" height="40"
+					 skinClass="skins.TextInputSkin" fontWeight="bold" color="0x505050"
+					 displayAsPassword="true"/>
 		
 		<s:Button id="sendInformationButton" label="Send"
-				  click="sendInformationButton_clickHandler(event)"/>	
-	</s:HGroup>
-	
-	
-	
+				  click="sendInformationButton_clickHandler(event)"/>
+		
+	</s:VGroup>
 	
 </s:View>
