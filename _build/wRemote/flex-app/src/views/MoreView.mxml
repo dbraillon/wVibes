@@ -4,6 +4,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import com.dbraillon.broadcast.BroadcastInterface;
 			
 			protected function homeButton_clickHandler(event:MouseEvent):void
 			{
@@ -23,7 +24,5 @@
 				  click="homeButton_clickHandler(event)"/>
 		
 	</s:actionContent>
-	
-	
 	
 </s:View>

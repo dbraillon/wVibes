@@ -11,6 +11,8 @@
 			
 			protected function wRemote_preinitializeHandler(event:FlexEvent):void
 			{
+				trace("-applicationPreinitialize : INITIALIZE HOME BUTTON HANDLER");
+				
 				searchNavigator.addEventListener("search_home", homeButtonBar_clickHandler);
 				playlistsNavigator.addEventListener("playlists_home", homeButtonBar_clickHandler);
 				newsNavigator.addEventListener("news_home", homeButtonBar_clickHandler);
@@ -19,12 +21,16 @@
 			
 			protected function wRemote_creationCompleteHandler(event:FlexEvent):void
 			{
+				trace("-applicationCreationComplete : HIDE LOGIN TAB BAR");
+				
 				tabbedNavigator.tabBar.dataGroup.getElementAt(0).visible = false;
 				tabbedNavigator.tabBar.dataGroup.getElementAt(0).includeInLayout = false;
 			}
 			
 			protected function homeButtonBar_clickHandler(event:Event):void
 			{
+				trace("-homeButtonClick : RETURN ON LOGIN TAB BAR");
+				
 				tabbedNavigator.selectedIndex = 0;
 			}
 			

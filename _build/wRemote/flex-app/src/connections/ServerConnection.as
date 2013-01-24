@@ -2,6 +2,10 @@ package connections
 {
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	
+	import mx.rpc.events.FaultEvent;
+	import mx.rpc.events.ResultEvent;
+	import mx.rpc.http.HTTPService;
 
 	public class ServerConnection extends EventDispatcher
 	{
@@ -13,7 +17,6 @@ package connections
 		private static var _instance:ServerConnection;
 		
 		
-		private var _eventDispatcher:EventDispatcher;
 		private var _data:Object;
 		
 		public function ServerConnection()
@@ -34,10 +37,43 @@ package connections
 			return _instance;
 		}
 		
+		
 		public function signinRequest(login:String, password:String):void
 		{
+			trace("-signinRequest : LOGIN " + login + " PASSWORD " + password);
+			
+			var httpService:HTTPService = new HTTPService();
+			httpService.resultFormat = "text";
+			httpService.method = "POST";
+			
+			httpService.url = "http://10.18.17.1:9000/login?";
+			httpService.url += "username=" + login;
+			httpService.url += "&password=" + password;
+			httpService.url += "&serviceName=" + "wvibes";
+			
+			trace("-signinRequest : URL REQUEST " + httpService.url);
+			
+			httpService.addEventListener(ResultEvent.RESULT, httpRequest_resultHandler);
+			httpService.addEventListener(FaultEvent.FAULT, httpRequest_faultHandler);
+			httpService.send();
+		}
+		
+		protected function httpRequest_faultHandler(event:FaultEvent):void
+		{
+			trace("-signinRequest : FAILED");
+			
+			dispatchEvent(new Event(SIGNIN_FAILED));
+		}
+		
+		protected function httpRequest_resultHandler(event:ResultEvent):void
+		{
+			trace("-signinRequest : SUCCED");
+			
+			var result:Object = JSON.parse(event.result.toString());
+			
 			dispatchEvent(new Event(SIGNIN_SUCCED));
 		}
+		
 		
 		public function playingMusicRequest():void
 		{

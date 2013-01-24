@@ -59,6 +59,7 @@
 					 displayAsPassword="true"/>
 		
 		<s:Button id="sendInformationButton" label="Send"
+				  skinClass="skins.ButtonSkin" width="40" height="40"
 				  click="sendInformationButton_clickHandler(event)"/>
 		
 	</s:VGroup>
