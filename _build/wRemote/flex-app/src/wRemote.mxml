@@ -3,6 +3,17 @@
 								  xmlns:s="library://ns.adobe.com/flex/spark" applicationDPI="160"
 								  preinitialize="wRemote_preinitializeHandler(event)"
 								  creationComplete="wRemote_creationCompleteHandler(event)">
+	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		
+		s|ActionBar {
+			
+			skinClass: ClassReference("skins.ActionBarSkin");
+		}
+		
+	</fx:Style>
+	
 	<fx:Script>
 		<![CDATA[
 			import mx.events.FlexEvent;

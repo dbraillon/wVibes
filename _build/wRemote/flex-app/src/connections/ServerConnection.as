@@ -45,6 +45,8 @@ package connections
 			var httpService:HTTPService = new HTTPService();
 			httpService.resultFormat = "text";
 			httpService.method = "POST";
+			httpService.showBusyCursor = true;
+			httpService.requestTimeout = 5;
 			
 			httpService.url = "http://10.18.17.1:9000/login?";
 			httpService.url += "username=" + login;
