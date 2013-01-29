@@ -10,6 +10,7 @@
 		s|ActionBar {
 			
 			skinClass: ClassReference("skins.ActionBarSkin");
+			defaultButtonAppearance: normal;
 		}
 		
 	</fx:Style>

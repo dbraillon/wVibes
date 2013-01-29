@@ -26,18 +26,14 @@
 	name=titleDisplay, type=spark.core.IDisplayText, required=false
 	-->
 	
-	<s:Rect left="1" right="1" top="1" bottom="1"
-			height="45">
+	<s:Rect left="0" right="0" top="0" bottom="0">
 		<s:fill>
-			<s:SolidColor color="0x202020"/>
+			<s:SolidColor color="0x151515"/>
 		</s:fill>
 	</s:Rect>
 	
-	<s:Group id="navigationGroup" left="1" top="2" height="45"/>
-	
-	<s:Group id="actionGroup" right="1" top="2" height="45"/>
-	
-	<s:Label id="titleDisplay" top="2" height="45"
-			 horizontalCenter="0" verticalAlign="middle"/>
+	<s:Group id="navigationGroup" left="0"/>
+	<s:Group id="titleGroup" horizontalCenter="-45" top="10" color="0xE5E5E5"/>
+	<s:Group id="actionGroup" right="0"/>
 	
 </s:Skin>

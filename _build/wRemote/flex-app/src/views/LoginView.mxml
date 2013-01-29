@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" title="Login"
-		actionBarVisible="true" tabBarVisible="false"
+		actionBarVisible="false" tabBarVisible="false"
 		preinitialize="view_preinitializeHandler(event)">
 	
 	<fx:Script>
@@ -26,14 +26,16 @@
 				var login:String = loginInput.text;
 				var password:String = passwordInput.text;
 				
-				serverConnection.addEventListener(ServerConnection.SIGNIN_SUCCED, serverConnection_signinSuccess);
+				navigator.pushView(PlayView);
+				
+				/*serverConnection.addEventListener(ServerConnection.SIGNIN_SUCCED, serverConnection_signinSuccess);
 				serverConnection.addEventListener(ServerConnection.SIGNIN_FAILED, serverConnection_signinFail);
 				serverConnection.signinRequest(login, password);
 				
 				trace("-loginViewSendInformation : WAITING FOR RESPONSE...");
 				
 				errorLabel_change(false, "");
-				sendInformationButton.enabled = false;
+				sendInformationButton.enabled = false;*/
 			}
 			
 			protected function serverConnection_signinSuccess(event:Event):void
@@ -75,18 +77,6 @@
 	<fx:Declarations>
 		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
 	</fx:Declarations>
-	
-	<s:navigationContent>
-		<s:Button label="Back"/>
-	</s:navigationContent>
-	
-	<s:titleContent>
-		<s:Label text="Some Text Here"/>
-	</s:titleContent>
-	
-	<s:actionContent>
-		<s:Button label="Action" />
-	</s:actionContent>
 	
 	<s:VGroup left="20" right="20" height="100%" width="100%"
 			  horizontalAlign="center" verticalAlign="middle">
