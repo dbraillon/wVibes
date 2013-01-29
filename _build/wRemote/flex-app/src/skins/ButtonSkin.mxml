@@ -29,7 +29,7 @@
 		</s:stroke>
 	</s:Rect>
 	
-	<s:Label id="labelButton" text="{hostComponent.label}" top="2" left="20" right="20"
-			 height="{hostComponent.height}" verticalAlign="middle"/>
+	<s:Label id="labelDisplay"/>
+	<s:BitmapImage id="iconDisplay"/>
 	
 </s:Skin>

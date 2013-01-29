@@ -57,6 +57,16 @@
 				isPlayingBoolean = false;
 			}
 			
+			protected function quitButton_clickHandler(event:MouseEvent):void
+			{
+				var exitingEvent:Event = new Event(Event.EXITING, false, true);
+				NativeApplication.nativeApplication.dispatchEvent(exitingEvent);
+				
+				if (!exitingEvent.isDefaultPrevented()) {
+					NativeApplication.nativeApplication.exit();
+				}
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -76,7 +86,7 @@
 	</fx:Declarations>
 	
 	<s:navigationContent>
-		<s:Button icon="assets/32x32/quit.png"/>
+		<s:Button id="quitButton" icon="assets/32x32/quit.png" click="quitButton_clickHandler(event)"/>
 	</s:navigationContent>
 	
 	<s:titleContent>
@@ -90,7 +100,7 @@
 		<s:Button icon="assets/32x32/queue.png"/>
 	</s:actionContent>
 	
-	<s:VGroup width="100%" height="100%" horizontalAlign="center">
+	<s:VGroup width="100%" height="100%" horizontalAlign="center" top="2">
 		
 		<s:Image height="60%" source="{sourceString}"/>
 		
