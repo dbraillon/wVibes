@@ -92,7 +92,7 @@
 					 displayAsPassword="true"/>
 		
 		<s:Button id="sendInformationButton" label="Se connecter"
-				  skinClass="skins.ButtonSkin" height="40"
+				  skinClass="skins.ButtonSkin" height="40" left="10" right="10"
 				  click="sendInformationButton_clickHandler(event)"/>
 		
 	</s:VGroup>

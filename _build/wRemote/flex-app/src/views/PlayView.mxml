@@ -3,7 +3,7 @@
 		xmlns:s="library://ns.adobe.com/flex/spark" title="Play"
 		preinitialize="view_preinitializeHandler(event)"
 		viewActivate="view_activateHandler(event)"
-		backgroundColor="0x151515">
+		>
 	
 	<fx:Script>
 		<![CDATA[
@@ -67,6 +67,13 @@
 				}
 			}
 			
+			protected function slider_changeHandler(event:Event):void
+			{
+				var i:int = slider.value / 60;
+				
+				currentInt = slider.value;
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -100,19 +107,20 @@
 		<s:Button icon="assets/32x32/queue.png"/>
 	</s:actionContent>
 	
-	<s:VGroup width="100%" height="100%" horizontalAlign="center" top="2">
+	<s:VGroup width="100%" height="100%" horizontalAlign="center" top="5">
 		
 		<s:Image height="60%" source="{sourceString}"/>
 		
 		<s:Label id="titleLabel" text="{titleString}" fontWeight="bold"/>
 		<s:Label id="artistLabel" text="{artistString}"/>
 		
-		<s:HGroup width="100%" verticalAlign="middle" horizontalAlign="center">
+		<s:HGroup width="100%" verticalAlign="middle" horizontalAlign="center"
+				  paddingLeft="5" paddingRight="5">
 			
 			<s:Label id="currentTime" text="{currentInt}" width="10%"/>
 			
 			<s:HSlider id="slider" width="80%" minimum="0" maximum="{endInt}" stepSize="1"
-					   liveDragging="true" change="currentInt=slider.value"/>
+					   liveDragging="true" change="slider_changeHandler(event)"/>
 			
 			<s:Label id="endTime" text="{endInt}" width="10%"/>
 			
@@ -120,19 +128,25 @@
 		
 		<s:HGroup width="100%" verticalAlign="middle" horizontalAlign="center">
 			
-			<s:Button id="repeatButton" label="R"/>
+			<s:Button id="repeatButton" width="40" height="40" icon="assets/32x32/repeat.png"
+					  skinClass="skins.ButtonSkin"/>
 			
-			<s:Button id="previousButton" label="Pr"/>
+			<s:Button id="previousButton" width="40" height="40" icon="assets/32x32/previous.png"
+					  skinClass="skins.ButtonSkin"/>
 			
-			<s:Button id="playButton" label="Pl" click="playButton_clickHandler(event)"
-					  visible="{!isPlayingBoolean}" includeInLayout="{!isPlayingBoolean}"/>
+			<s:Button id="playButton" visible="{!isPlayingBoolean}" width="40" height="40" icon="assets/32x32/play.png"
+					  click="playButton_clickHandler(event)" includeInLayout="{!isPlayingBoolean}"
+					  skinClass="skins.ButtonSkin"/>
 			
-			<s:Button id="pauseButton" label="Pa" click="pauseButton_clickHandler(event)"
-					  visible="{isPlayingBoolean}" includeInLayout="{isPlayingBoolean}"/>
+			<s:Button id="pauseButton" visible="{isPlayingBoolean}" width="40" height="40" icon="assets/32x32/pause.png"
+					  click="pauseButton_clickHandler(event)" includeInLayout="{isPlayingBoolean}"
+					  skinClass="skins.ButtonSkin"/>
 			
-			<s:Button id="nextButton" label="N"/>
+			<s:Button id="nextButton" width="40" height="40" icon="assets/32x32/next.png"
+					  skinClass="skins.ButtonSkin"/>
 			
-			<s:Button id="shuffleButton" label="S"/>
+			<s:Button id="shuffleButton" width="40" height="40" icon="assets/32x32/shuffle.png"
+					  skinClass="skins.ButtonSkin"/>
 			
 		</s:HGroup>
 		
