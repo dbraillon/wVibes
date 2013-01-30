@@ -37,7 +37,7 @@
 	name=labelDisplay, type=spark.core.IDisplayText, required=false
 	-->
 	
-	<s:Rect left="0" right="0" top="0" bottom="0" minHeight="40" minWidth="40">
+	<s:Rect left="0" right="0" top="0" bottom="0" height="{hostComponent.height}" width="{hostComponent.height}">
 		<s:fill>
 			<s:BitmapFill source="@Embed('assets/background/btn-circle-green.png')"
 						  source.down="@Embed('assets/background/btn-circle-green-hover.png')"/>

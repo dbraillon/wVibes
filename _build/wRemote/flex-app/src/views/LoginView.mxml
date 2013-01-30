@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		xmlns:s="library://ns.adobe.com/flex/spark" title="Login"
-		actionBarVisible="false" tabBarVisible="false"
-		preinitialize="view_preinitializeHandler(event)"
-		skinClass="skins.ViewSkin">
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		skinClass="skins.ViewSkin" actionBarVisible="false" tabBarVisible="false"
+		preinitialize="view_preinitializeHandler(event)">
 	
 	<fx:Script>
 		<![CDATA[
 			import connections.ServerConnection;
 			
 			import mx.events.FlexEvent;
+			
 			
 			private var serverConnection:ServerConnection;
 			
@@ -75,15 +75,11 @@
 		]]>
 	</fx:Script>
 	
-	<fx:Declarations>
-		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
-	</fx:Declarations>
-	
-	<s:VGroup height="848" width="100%" horizontalAlign="center" gap="0">
+	<s:VGroup height="70%" width="100%" horizontalAlign="center" gap="0">
 		
-		<s:Spacer height="10%"/>
+		<s:Spacer height="6%"/>
 		
-		<s:Image width="75%" height="25%" smooth="true" smoothingQuality="high"
+		<s:Image width="75%" height="40%" smooth="true" smoothingQuality="high"
 				 source="assets/background/logo-white.png"/>
 		
 		<s:Spacer height="10%"/>
@@ -101,15 +97,17 @@
 		<s:Spacer height="10%"/>
 		
 		<s:Button id="sendInformationButton" label="GO !" color="0xFCFCFC"
-				  skinClass="skins.ButtonSkin" height="70" width="70"
+				  skinClass="skins.ButtonSkin" height="20%"
 				  click="sendInformationButton_clickHandler(event)"/>
 		
 	</s:VGroup>
-	<s:VGroup bottom="-1" width="100%" horizontalAlign="right" horizontalCenter="0"
-			  verticalAlign="bottom">
-		<s:Image right="0" height="100%" horizontalAlign="right" smooth="true"
-				 smoothingQuality="high" source="assets/background/footer-login-vW.png"
-				 verticalAlign="bottom"/>
+	
+	<!--- footer, work fine ! -->
+	<s:VGroup width="100%" height="30%" bottom="0" horizontalAlign="right" verticalAlign="bottom">
+		
+		<s:Image width="50%" height="100%" right="0" horizontalAlign="right" verticalAlign="bottom"
+				 smooth="true" smoothingQuality="high" source="assets/background/footer-login-vW.png"/>
+		
 	</s:VGroup>
 	
 </s:View>

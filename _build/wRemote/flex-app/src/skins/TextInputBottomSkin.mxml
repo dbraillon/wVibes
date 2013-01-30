@@ -59,7 +59,7 @@
 	
 	<s:Rect left="1" right="1" top="0" bottom="1"
 			height="{hostComponent.height}" width="{hostComponent.width}"
-			bottomLeftRadiusX="10" bottomRightRadiusX="10">
+			bottomLeftRadiusX="5" bottomRightRadiusX="5">
 		<s:fill>
 			<s:SolidColor color="0xF6F6F6"/>
 		</s:fill>
@@ -70,9 +70,9 @@
 	
 	<!-- text -->
 	<s:RichEditableText id="textDisplay" verticalAlign="middle" widthInChars="10"
-						left="10" right="1" top="3" bottom="1" fontFamily="openRegular"/>
+						left="20" right="1" top="3" bottom="1" fontFamily="openRegular"/>
 	
-	<s:Label id="promptLabel" verticalAlign="middle" top="1" left="10"
+	<s:Label id="promptLabel" verticalAlign="middle" top="1" left="20"
 			 height="{hostComponent.height}" text="{hostComponent.prompt}"
 			 fontStyle="normal" fontWeight="normal" fontFamily="openLightItalic" color="0xA8A8B7"/>
 	
