@@ -2,8 +2,7 @@
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" title="Play"
 		preinitialize="view_preinitializeHandler(event)"
-		viewActivate="view_activateHandler(event)"
-		>
+		viewActivate="view_activateHandler(event)">
 	
 	<fx:Script>
 		<![CDATA[
@@ -74,6 +73,22 @@
 				currentInt = slider.value;
 			}
 			
+			protected function panelButton_clickHandler(event:MouseEvent):void
+			{
+				if(isHide)
+				{
+					panelOut.play();
+					contentOut.play();
+					isHide = false;
+				}
+				else
+				{
+					panelIn.play();
+					contentIn.play();
+					isHide = true;
+				}
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -87,13 +102,19 @@
 		<fx:int id="endInt">185</fx:int>
 		
 		<fx:Boolean id="isPlayingBoolean">false</fx:Boolean>
+		<fx:Boolean id="isHide">true</fx:Boolean>
 		
 		<fx:String id="playlistString">LP en vrac</fx:String>
+		
+		<s:Move id="panelOut" target="{panel}" xTo="0" duration="250"/>
+		<s:Move id="contentOut" target="{content}" xTo="100" duration="250"/>
+		<s:Move id="panelIn" target="{panel}" xTo="-100" duration="250"/>
+		<s:Move id="contentIn" target="{content}" xTo="0" duration="250"/>
 		
 	</fx:Declarations>
 	
 	<s:navigationContent>
-		<s:Button id="quitButton" icon="assets/32x32/quit.png" click="quitButton_clickHandler(event)"/>
+		<s:Button id="panelButton" icon="assets/32x32/queue.png" click="panelButton_clickHandler(event)"/>
 	</s:navigationContent>
 	
 	<s:titleContent>
@@ -104,10 +125,10 @@
 	</s:titleContent>
 	
 	<s:actionContent>
-		<s:Button icon="assets/32x32/queue.png"/>
+		<s:Button id="quitButton" icon="assets/32x32/quit.png" click="quitButton_clickHandler(event)"/>
 	</s:actionContent>
 	
-	<s:VGroup width="100%" height="100%" horizontalAlign="center" top="5">
+	<s:VGroup id="content" width="100%" height="100%" horizontalAlign="center" top="5">
 		
 		<s:Image height="60%" source="{sourceString}"/>
 		
@@ -151,5 +172,17 @@
 		</s:HGroup>
 		
 	</s:VGroup>
+	
+	<s:Group id="panel" width="100" height="100%" x="-100">
+		<s:Rect width="100" height="100%">
+			<s:fill>
+				<s:SolidColor color="0xDADADA"/>
+			</s:fill>
+		</s:Rect>
+		<s:VGroup height="100%" width="100%" gap="0">
+			<s:Button label="TEST BUTTON" width="100%" skinClass="skins.ButtonSkin" fontSize="10" left="10" right="10"/>
+			<s:Button label="TEST BUTTON2" width="100%" skinClass="skins.ButtonSkin" fontSize="10" left="10" right="10"/>
+		</s:VGroup>
+	</s:Group>
 	
 </s:View>
