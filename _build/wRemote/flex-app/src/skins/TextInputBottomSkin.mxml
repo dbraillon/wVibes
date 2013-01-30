@@ -7,6 +7,23 @@
 		[HostComponent("spark.components.TextInput")]
 	</fx:Metadata>
 	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		
+		@font-face {
+			src:url("assets/fonts/OpenSans-LightItalic.ttf");
+			fontFamily: openLightItalic;
+			advancedAntiAliasing: true;
+		}
+		
+		@font-face {
+			src:url("assets/fonts/OpenSans-Regular.ttf");
+			fontFamily: openRegular;
+			advancedAntiAliasing: true;
+		}
+		
+	</fx:Style>
+	
 	<fx:Script>
 		<![CDATA[
 			
@@ -40,19 +57,23 @@
 	name=textDisplay, type=spark.core.IEditableText, required=false
 	-->
 	
-	<s:Rect left="1" right="1" top="1" bottom="1" minHeight="20" minWidth="40" 
-			height="{hostComponent.height}" width="{hostComponent.width}">
+	<s:Rect left="1" right="1" top="0" bottom="1"
+			height="{hostComponent.height}" width="{hostComponent.width}"
+			bottomLeftRadiusX="10" bottomRightRadiusX="10">
 		<s:fill>
-			<s:SolidColor color="0xDADADA"/>
+			<s:SolidColor color="0xF6F6F6"/>
 		</s:fill>
+		<s:stroke>
+			<s:SolidColorStroke color="0xC4C4C4"/>
+		</s:stroke>
 	</s:Rect>
 	
 	<!-- text -->
 	<s:RichEditableText id="textDisplay" verticalAlign="middle" widthInChars="10"
-						left="10" right="1" top="3" bottom="1"/>
+						left="10" right="1" top="3" bottom="1" fontFamily="openRegular"/>
 	
 	<s:Label id="promptLabel" verticalAlign="middle" top="1" left="10"
 			 height="{hostComponent.height}" text="{hostComponent.prompt}"
-			 fontWeight="normal" fontStyle="italic"/>
+			 fontStyle="normal" fontWeight="normal" fontFamily="openLightItalic" color="0xA8A8B7"/>
 	
 </s:Skin>

@@ -7,6 +7,23 @@
 		[HostComponent("spark.components.Button")]
 	</fx:Metadata>
 	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+
+		@font-face {
+			src:url("assets/fonts/OpenSans-LightItalic.ttf");
+			fontFamily: openLightItalic;
+			advancedAntiAliasing: true;
+		}
+		
+		@font-face {
+			src:url("assets/fonts/OpenSans-Bold.ttf");
+			fontFamily: openBold;
+			advancedAntiAliasing: true;
+		}
+		
+	</fx:Style>
+	
 	<!-- states -->
 	<s:states>
 		<s:State name="disabled" />
@@ -22,14 +39,14 @@
 	
 	<s:Rect left="0" right="0" top="0" bottom="0" minHeight="40" minWidth="40">
 		<s:fill>
-			<s:SolidColor color="0xDADADA" color.down="0xD0D0D0" color.disabled="0xEAEAEA"/>
+			<s:BitmapFill source="@Embed('assets/background/btn-circle-green.png')"
+						  source.down="@Embed('assets/background/btn-circle-green-hover.png')"/>
 		</s:fill>
-		<s:stroke>
-			<s:SolidColorStroke color="0x505050"/>
-		</s:stroke>
 	</s:Rect>
 	
-	<s:Label id="labelDisplay" left="{hostComponent.left}" right="{hostComponent.right}" height="100%" verticalAlign="middle" top="2"/>
+	
+	<s:Label id="labelDisplay" height="100%" verticalAlign="middle" horizontalCenter="0" top="2"
+			 fontStyle="normal" fontWeight="normal" text="{hostComponent.label}" fontFamily="openBold"/>
 	<s:BitmapImage id="iconDisplay" top="5" bottom="5" left="5" right="5"/>
 	
 </s:Skin>

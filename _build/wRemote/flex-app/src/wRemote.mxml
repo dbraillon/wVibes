@@ -9,8 +9,8 @@
 		
 		s|ActionBar {
 			
+			defaultButtonAppearance: normal; /* beveled for iOS like */
 			skinClass: ClassReference("skins.ActionBarSkin");
-			defaultButtonAppearance: normal;
 		}
 		
 	</fx:Style>
@@ -35,8 +35,8 @@
 			{
 				trace("-applicationCreationComplete : HIDE LOGIN TAB BAR");
 				
-				tabbedNavigator.tabBar.dataGroup.getElementAt(0).visible = false;
-				tabbedNavigator.tabBar.dataGroup.getElementAt(0).includeInLayout = false;
+				//tabbedNavigator.tabBar.dataGroup.getElementAt(0).visible = false;
+				//tabbedNavigator.tabBar.dataGroup.getElementAt(0).includeInLayout = false;
 			}
 			
 			protected function homeButtonBar_clickHandler(event:Event):void
@@ -54,9 +54,5 @@
 	<s:ViewNavigator id="playlistsNavigator" label="Playlists" width="100%" height="100%" firstView="views.PlaylistsView"/>
 	<s:ViewNavigator id="newsNavigator" label="News" width="100%" height="100%" firstView="views.NewsView"/>
 	<s:ViewNavigator id="moreNavigator" label="More" width="100%" height="100%" firstView="views.MoreView"/>
-	
-	<fx:Declarations>
-		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
-	</fx:Declarations>
 	
 </s:TabbedViewNavigatorApplication>
