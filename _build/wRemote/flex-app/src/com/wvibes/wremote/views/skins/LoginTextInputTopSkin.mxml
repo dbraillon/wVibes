@@ -57,9 +57,9 @@
 	name=textDisplay, type=spark.core.IEditableText, required=false
 	-->
 	
-	<s:Rect left="1" right="1" top="0" bottom="1"
+	<s:Rect left="1" right="1" top="1" bottom="0"
 			height="{hostComponent.height}" width="{hostComponent.width}"
-			bottomLeftRadiusX="5" bottomRightRadiusX="5">
+			topLeftRadiusX="5" topRightRadiusX="5">
 		<s:fill>
 			<s:SolidColor color="0xF6F6F6"/>
 		</s:fill>
@@ -72,8 +72,8 @@
 	<s:RichEditableText id="textDisplay" verticalAlign="middle" widthInChars="10"
 						left="20" right="1" top="3" bottom="1" fontFamily="openRegular"/>
 	
-	<s:Label id="promptLabel" verticalAlign="middle" top="1" left="20"
-			 height="{hostComponent.height}" text="{hostComponent.prompt}"
+	<s:Label id="promptLabel" top="1" left="20" text="{hostComponent.prompt}"
+			 height="{hostComponent.height}" verticalAlign="middle"
 			 fontStyle="normal" fontWeight="normal" fontFamily="openLightItalic" color="0xA8A8B7"/>
 	
 </s:Skin>

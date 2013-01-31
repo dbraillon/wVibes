@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark"
-		skinClass="skins.ViewSkin" actionBarVisible="false" tabBarVisible="false"
+		skinClass="com.wvibes.wremote.views.skins.ViewSkin" actionBarVisible="false" tabBarVisible="false"
 		preinitialize="view_preinitializeHandler(event)">
 	
 	<fx:Script>
 		<![CDATA[
-			import connections.ServerConnection;
+			import com.wvibes.wremote.connections.ServerConnection;
 			
 			import mx.events.FlexEvent;
 			
@@ -88,16 +88,16 @@
 				 fontWeight="bold" color="0xFF1010" fontFamily=""/>
 		
 		<s:TextInput id="loginInput" prompt="Email ou Identifiant..." width="75%" height="40"
-					 skinClass="skins.TextInputTopSkin" color="0x505050"/>
+					 skinClass="com.wvibes.wremote.views.skins.LoginTextInputTopSkin" color="0x505050"/>
 		
 		<s:TextInput id="passwordInput" prompt="Mot de passe..." width="75%" height="40"
-					 skinClass="skins.TextInputBottomSkin" fontWeight="bold" color="0x505050"
+					 skinClass="com.wvibes.wremote.views.skins.LoginTextInputBottomSkin" fontWeight="bold" color="0x505050"
 					 displayAsPassword="true"/>
 		
 		<s:Spacer height="10%"/>
 		
-		<s:Button id="sendInformationButton" label="GO !" color="0xFCFCFC"
-				  skinClass="skins.ButtonSkin" height="20%"
+		<s:Button id="sendInformationButton" label="Connexion" color="0xFCFCFC" width="75%"
+				  skinClass="com.wvibes.wremote.views.skins.LoginButtonSkin" height="15%"
 				  click="sendInformationButton_clickHandler(event)"/>
 		
 	</s:VGroup>

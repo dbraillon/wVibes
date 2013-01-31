@@ -1,4 +1,4 @@
-package connections
+package com.wvibes.wremote.connections
 {
 	import flash.events.Event;
 	import flash.events.EventDispatcher;

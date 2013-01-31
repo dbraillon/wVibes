@@ -17,12 +17,16 @@
 		}
 		
 		@font-face {
-			src:url("assets/fonts/OpenSans-Bold.ttf");
-			fontFamily: openBold;
+			src:url("assets/fonts/OpenSans-Semibold.ttf");
+			fontFamily: openSemiBold;
 			advancedAntiAliasing: true;
 		}
 		
 	</fx:Style>
+	
+	<fx:Declarations>
+		<s:DropShadowFilter id="glow" alpha="65" angle="45" strength="1" distance="1"/>
+	</fx:Declarations>
 	
 	<!-- states -->
 	<s:states>
@@ -37,16 +41,17 @@
 	name=labelDisplay, type=spark.core.IDisplayText, required=false
 	-->
 	
-	<s:Rect left="0" right="0" top="0" bottom="0" height="{hostComponent.height}" width="{hostComponent.height}">
+	<s:Rect left="0" right="0" top="0" bottom="0" height="{hostComponent.height}">
 		<s:fill>
-			<s:BitmapFill source="@Embed('assets/background/btn-circle-green.png')"
-						  source.down="@Embed('assets/background/btn-circle-green-hover.png')"/>
+			<s:BitmapFill source="@Embed('assets/background/btn-primary-action.png')"
+						  source.down="@Embed('assets/background/btn-primary-action-hover.png')"/>
 		</s:fill>
 	</s:Rect>
 	
-	
 	<s:Label id="labelDisplay" height="100%" verticalAlign="middle" horizontalCenter="0" top="2"
-			 fontStyle="normal" fontWeight="normal" text="{hostComponent.label}" fontFamily="openBold"/>
+			 fontStyle="normal" fontWeight="normal" fontFamily="openSemiBold" text="{hostComponent.label}"
+			 filters="{glow}"/>
+	
 	<s:BitmapImage id="iconDisplay" top="5" bottom="5" left="5" right="5"/>
 	
 </s:Skin>

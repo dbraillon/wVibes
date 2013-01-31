@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		xmlns:s="library://ns.adobe.com/flex/spark" title="Play"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		skinClass="com.wvibes.wremote.views.skins.ViewSkin"
 		preinitialize="view_preinitializeHandler(event)"
 		viewActivate="view_activateHandler(event)">
 	
 	<fx:Script>
 		<![CDATA[
-			import connections.ServerConnection;
+			import com.wvibes.wremote.connections.ServerConnection;
 			
 			import mx.events.FlexEvent;
 			
@@ -130,7 +131,7 @@
 	
 	<s:VGroup id="content" width="100%" height="100%" horizontalAlign="center" top="5">
 		
-		<s:Image height="60%" source="{sourceString}"/>
+		<s:Image height="60%" smooth="true" smoothingQuality="high" source="{sourceString}"/>
 		
 		<s:Label id="titleLabel" text="{titleString}" fontWeight="bold"/>
 		<s:Label id="artistLabel" text="{artistString}"/>
@@ -150,24 +151,24 @@
 		<s:HGroup width="100%" verticalAlign="middle" horizontalAlign="center">
 			
 			<s:Button id="repeatButton" width="40" height="40" icon="assets/32x32/repeat.png"
-					  skinClass="skins.ButtonSkin"/>
+					  skinClass="com.wvibes.wremote.views.skins.LoginButtonSkin"/>
 			
 			<s:Button id="previousButton" width="40" height="40" icon="assets/32x32/previous.png"
-					  skinClass="skins.ButtonSkin"/>
+					  skinClass="com.wvibes.wremote.views.skins.LoginButtonSkin"/>
 			
 			<s:Button id="playButton" visible="{!isPlayingBoolean}" width="40" height="40" icon="assets/32x32/play.png"
 					  click="playButton_clickHandler(event)" includeInLayout="{!isPlayingBoolean}"
-					  skinClass="skins.ButtonSkin"/>
+					  skinClass="com.wvibes.wremote.views.skins.LoginButtonSkin"/>
 			
 			<s:Button id="pauseButton" visible="{isPlayingBoolean}" width="40" height="40" icon="assets/32x32/pause.png"
 					  click="pauseButton_clickHandler(event)" includeInLayout="{isPlayingBoolean}"
-					  skinClass="skins.ButtonSkin"/>
+					  skinClass="com.wvibes.wremote.views.skins.LoginButtonSkin"/>
 			
 			<s:Button id="nextButton" width="40" height="40" icon="assets/32x32/next.png"
-					  skinClass="skins.ButtonSkin"/>
+					  skinClass="com.wvibes.wremote.views.skins.LoginButtonSkin"/>
 			
 			<s:Button id="shuffleButton" width="40" height="40" icon="assets/32x32/shuffle.png"
-					  skinClass="skins.ButtonSkin"/>
+					  skinClass="com.wvibes.wremote.views.skins.LoginButtonSkin"/>
 			
 		</s:HGroup>
 		
@@ -180,8 +181,8 @@
 			</s:fill>
 		</s:Rect>
 		<s:VGroup height="100%" width="100%" gap="0">
-			<s:Button label="TEST BUTTON" width="100%" skinClass="skins.ButtonSkin" fontSize="10" left="10" right="10"/>
-			<s:Button label="TEST BUTTON2" width="100%" skinClass="skins.ButtonSkin" fontSize="10" left="10" right="10"/>
+			<s:Button label="TEST BUTTON" width="100%" skinClass="com.wvibes.wremote.views.skins.LoginButtonSkin" fontSize="10" left="10" right="10"/>
+			<s:Button label="TEST BUTTON2" width="100%" skinClass="com.wvibes.wremote.views.skins.LoginButtonSkin" fontSize="10" left="10" right="10"/>
 		</s:VGroup>
 	</s:Group>
 	
