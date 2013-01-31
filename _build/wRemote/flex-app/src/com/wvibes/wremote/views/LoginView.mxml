@@ -2,7 +2,27 @@
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark"
 		skinClass="com.wvibes.wremote.views.skins.ViewSkin" actionBarVisible="false" tabBarVisible="false"
-		preinitialize="view_preinitializeHandler(event)">
+		preinitialize="view_preinitializeHandler(event)" xmlns:mx="library://ns.adobe.com/flex/mx">
+	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		
+		@font-face {
+			src:url("assets/fonts/OpenSans-Light.ttf");
+			fontFamily: openLight;
+			advancedAntiAliasing: true;
+		}
+	</fx:Style>
+	
+	<fx:Declarations>
+		<fx:int id="yFrom">0</fx:int>
+		<fx:Boolean id="isHide">true</fx:Boolean>
+		
+		<s:Move id="panelOpen" target="{panelError}" yTo="{-yFrom + 35}" duration="250"/>
+		<s:Move id="panelClose" target="{panelError}" yTo="{-yFrom}" duration="250"/>
+		<s:Move id="panelDetail" target="{panelError}" yTo="{-yFrom + 100}" duration="250"/>
+		
+	</fx:Declarations>
 	
 	<fx:Script>
 		<![CDATA[
@@ -27,16 +47,16 @@
 				var login:String = loginInput.text;
 				var password:String = passwordInput.text;
 				
-				navigator.pushView(PlayView);
+				//navigator.pushView(PlayView);
 				
-				/*serverConnection.addEventListener(ServerConnection.SIGNIN_SUCCED, serverConnection_signinSuccess);
+				serverConnection.addEventListener(ServerConnection.SIGNIN_SUCCED, serverConnection_signinSuccess);
 				serverConnection.addEventListener(ServerConnection.SIGNIN_FAILED, serverConnection_signinFail);
 				serverConnection.signinRequest(login, password);
 				
 				trace("-loginViewSendInformation : WAITING FOR RESPONSE...");
 				
 				errorLabel_change(false, "");
-				sendInformationButton.enabled = false;*/
+				sendInformationButton.enabled = false;
 			}
 			
 			protected function serverConnection_signinSuccess(event:Event):void
@@ -66,48 +86,101 @@
 			{
 				trace("-loginViewErrorLabel : DISPLAYED " + displayed + " TEXT " + text);
 				
-				errorLabel.visible = displayed;
-				errorLabel.includeInLayout = displayed;
-				
-				errorLabel.text = text;
+				if(displayed)
+				{
+					errorLabel.text = text;
+					panelOpen.play();
+				}
+				else
+				{
+					panelClose.play();
+				}
+			}
+			
+			protected function panelError_clickHandler(event:MouseEvent):void
+			{
+				if(isHide)
+				{
+					panelDetail.play();
+					isHide = false;
+				}
+				else
+				{
+					panelOpen.play();
+					isHide = true;
+				}
 			}
 			
 		]]>
 	</fx:Script>
 	
-	<s:VGroup height="70%" width="100%" horizontalAlign="center" gap="0">
+	<!-- header -->
+	<s:Group id="panelError" width="100%" height="50%" y="{-yFrom}" depth="2"
+			 click="panelError_clickHandler(event)"
+			 currentStateChange="yFrom=panelError.height"
+			 
+			 addedToStage="yFrom=panelError.height">
 		
-		<s:Spacer height="6%"/>
+		<s:VGroup height="100%" width="100%" horizontalAlign="center" gap="0">
+			
+			<s:Rect width="100%" height="100%">
+				<s:fill>
+					<s:SolidColor color="0xE60005"/>
+				</s:fill>
+			</s:Rect>
+			
+			<s:Group width="{errorLabel.width + 40}" height="30">
+				<s:Rect height="100%" width="100%" bottomLeftRadiusX="5" bottomRightRadiusX="5">
+					<s:fill>
+						<s:SolidColor color="0xE60005"/>
+					</s:fill>
+				</s:Rect>
+				<s:HGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+					<s:Image width="12" height="12" smooth="true" smoothingQuality="high"
+							 source="assets/background/ic-cross-white-x2.png"/>
+					<s:Label id="errorLabel"
+							 fontFamily="openLight" color="0xFFFFFF" fontSize="12"/>
+				</s:HGroup>
+				
+			</s:Group>
+			
+		</s:VGroup>
 		
-		<s:Image width="75%" height="40%" smooth="true" smoothingQuality="high"
-				 source="assets/background/logo-white.png"/>
-		
-		<s:Spacer height="10%"/>
-		
-		<s:Label id="errorLabel" visible="false" includeInLayout="false"
-				 fontWeight="bold" color="0xFF1010" fontFamily=""/>
-		
-		<s:TextInput id="loginInput" prompt="Email ou Identifiant..." width="75%" height="40"
-					 skinClass="com.wvibes.wremote.views.skins.LoginTextInputTopSkin" color="0x505050"/>
-		
-		<s:TextInput id="passwordInput" prompt="Mot de passe..." width="75%" height="40"
-					 skinClass="com.wvibes.wremote.views.skins.LoginTextInputBottomSkin" fontWeight="bold" color="0x505050"
-					 displayAsPassword="true"/>
-		
-		<s:Spacer height="10%"/>
-		
-		<s:Button id="sendInformationButton" label="Connexion" color="0xFCFCFC" width="75%"
-				  skinClass="com.wvibes.wremote.views.skins.LoginButtonSkin" height="15%"
-				  click="sendInformationButton_clickHandler(event)"/>
-		
-	</s:VGroup>
+	</s:Group>
 	
-	<!--- footer, work fine ! -->
-	<s:VGroup width="100%" height="30%" bottom="0" horizontalAlign="right" verticalAlign="bottom">
+	<s:VGroup id="content" height="100%" width="100%" depth="1">
+
+		<s:VGroup height="70%" width="100%" horizontalAlign="center" gap="0">
+			
+			<s:Spacer height="6%"/>
+			
+			<s:Image width="75%" height="40%" smooth="true" smoothingQuality="high"
+					 source="assets/background/logo-white.png"/>
+			
+			<s:Spacer height="10%"/>
+			
+			<s:TextInput id="loginInput" prompt="Email ou Identifiant..." width="75%" height="40"
+						 skinClass="com.wvibes.wremote.views.skins.LoginTextInputTopSkin" color="0x505050"/>
+			
+			<s:TextInput id="passwordInput" prompt="Mot de passe..." width="75%" height="40"
+						 skinClass="com.wvibes.wremote.views.skins.LoginTextInputBottomSkin" fontWeight="bold" color="0x505050"
+						 displayAsPassword="true"/>
+			
+			<s:Spacer height="10%"/>
+			
+			<s:Button id="sendInformationButton" label="Connexion" color="0xFCFCFC" width="75%"
+					  skinClass="com.wvibes.wremote.views.skins.LoginButtonSkin" height="40"
+					  click="sendInformationButton_clickHandler(event)"/>
+			
+		</s:VGroup>
 		
-		<s:Image width="50%" height="100%" right="0" horizontalAlign="right" verticalAlign="bottom"
-				 smooth="true" smoothingQuality="high" source="assets/background/footer-login-vW.png"/>
-		
+		<!--- footer, work fine ! -->
+		<s:VGroup width="100%" height="30%" bottom="0" horizontalAlign="right" verticalAlign="bottom">
+			
+			<s:Image width="50%" height="100%" right="0" horizontalAlign="right" verticalAlign="bottom"
+					 smooth="true" smoothingQuality="high" source="assets/background/footer-login-vW.png"/>
+			
+		</s:VGroup>
 	</s:VGroup>
 	
 </s:View>
