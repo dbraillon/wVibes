@@ -20,15 +20,15 @@
 			
 			protected function view_activateHandler(event:Event):void
 			{
-				serverConnection.addEventListener(ServerConnection.PLAYING_MUSIC_REQUEST_SUCCED, serverConnection_playingMusicRequestSucced);
+				/*serverConnection.addEventListener(ServerConnection.PLAYING_MUSIC_REQUEST_SUCCED, serverConnection_playingMusicRequestSucced);
 				serverConnection.addEventListener(ServerConnection.PLAYING_MUSIC_REQUEST_FAILED, serverConnection_playingMusicRequestFailed);
-				serverConnection.playingMusicRequest();
+				serverConnection.playingMusicRequest();*/
 			}
 			
 			protected function serverConnection_playingMusicRequestSucced(event:Event):void
 			{
-				serverConnection.removeEventListener(ServerConnection.PLAYING_MUSIC_REQUEST_SUCCED, serverConnection_playingMusicRequestSucced);
-				serverConnection.removeEventListener(ServerConnection.PLAYING_MUSIC_REQUEST_SUCCED, serverConnection_playingMusicRequestFailed);
+				//serverConnection.removeEventListener(ServerConnection.PLAYING_MUSIC_REQUEST_SUCCED, serverConnection_playingMusicRequestSucced);
+				//serverConnection.removeEventListener(ServerConnection.PLAYING_MUSIC_REQUEST_SUCCED, serverConnection_playingMusicRequestFailed);
 				
 				var data:Object = event.target.data;
 				sourceString = data.source;
@@ -43,8 +43,8 @@
 			
 			protected function serverConnection_playingMusicRequestFailed(event:Event):void
 			{
-				serverConnection.removeEventListener(ServerConnection.PLAYING_MUSIC_REQUEST_SUCCED, serverConnection_playingMusicRequestSucced);
-				serverConnection.removeEventListener(ServerConnection.PLAYING_MUSIC_REQUEST_SUCCED, serverConnection_playingMusicRequestFailed);
+				//serverConnection.removeEventListener(ServerConnection.PLAYING_MUSIC_REQUEST_SUCCED, serverConnection_playingMusicRequestSucced);
+				//serverConnection.removeEventListener(ServerConnection.PLAYING_MUSIC_REQUEST_SUCCED, serverConnection_playingMusicRequestFailed);
 			}
 			
 			protected function playButton_clickHandler(event:MouseEvent):void

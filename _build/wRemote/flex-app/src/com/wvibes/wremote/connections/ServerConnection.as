@@ -2,25 +2,38 @@ package com.wvibes.wremote.connections
 {
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	import flash.events.IOErrorEvent;
+	import flash.events.ProgressEvent;
+	import flash.events.SecurityErrorEvent;
+	import flash.net.Socket;
 	
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.http.HTTPService;
 
+	// https://gist.github.com/raphui/d054b6474d05112c287c
+	
+	
 	public class ServerConnection extends EventDispatcher
 	{
-		public static var SIGNIN_SUCCED:String = "server_connection_signin_succed";
-		public static var SIGNIN_FAILED:String = "server_connection_signin_failed";
-		public static var PLAYING_MUSIC_REQUEST_SUCCED:String = "server_connection_playing_music_request_succed";
-		public static var PLAYING_MUSIC_REQUEST_FAILED:String = "server_connection_playing_music_request_failed";
+		public static var REQUEST_SUCCED:String = "server_connection_request_succed";
+		public static var REQUEST_FAILED:String = "server_connection_request_failed";
 		
 		private static var _instance:ServerConnection;
 		
-		
+		private var _socket:Socket;
+		private var _address:String;
 		private var _data:Object;
 		
 		public function ServerConnection()
 		{
+			_data = new Object();
+			_socket = new Socket();
+			_socket.addEventListener(ProgressEvent.SOCKET_DATA, socketRequest_ReceiveHandler);
+			_socket.addEventListener(Event.CLOSE, socketRequest_ErrorHandler);
+			_socket.addEventListener(IOErrorEvent.IO_ERROR, socketRequest_ErrorHandler);
+			_socket.addEventListener(SecurityErrorEvent.SECURITY_ERROR, socketRequest_ErrorHandler);
+			
 			if(_instance)
 			{
 				throw new Error("Use getInstance() instead of new");
@@ -38,9 +51,82 @@ package com.wvibes.wremote.connections
 		}
 		
 		
+		public function changeAddress(address:String):void
+		{
+			trace("-serverConnection : CHANGE ADDRESS TO " + address);
+			
+			_address = address;
+		}
+		
+		private function socketRequest_ReceiveHandler(event:ProgressEvent):void
+		{
+			_data.response = _socket.readUTFBytes(_socket.bytesAvailable);
+			
+			trace("-serverConnection : RESPONSE " + _data.response);
+			
+			dispatchEvent(new Event(REQUEST_SUCCED));
+		}
+		
+		private function socketRequest_ErrorHandler(event:Event):void
+		{
+			if(event is SecurityErrorEvent) 
+			{
+				var se:SecurityErrorEvent = event as SecurityErrorEvent;
+				_data.error = se.text;
+			}
+			else if(event is IOErrorEvent)
+			{
+				var ioe:IOErrorEvent = event as IOErrorEvent;
+				_data.error = ioe.text;
+			}
+			else
+			{
+				_data.error = "Unknown error";
+			}
+			
+			trace("-serverConnection : ERROR " + _data.error);
+			
+			dispatchEvent(new Event(REQUEST_FAILED));
+		}
+		
+		public function signinRequest(login:String, password:String):void
+		{
+			trace("-serverConnection : SIGNIN REQUEST LOGIN " + login + " PASSWORD " + password);
+			
+			_socket.connect(_address, 1338);
+			_socket.writeUTFBytes("ACCOUNT#LOGIN#" + login + "%" + password);
+		}
+		
+		public function loadTrackOnStreamRequest(uri:String, stream:String):void
+		{
+			trace("-serverConnection : LOAD TRACK URI " + uri + " STREAM " + stream);
+			
+			_socket.connect(_address, 1338);
+			_socket.writeUTFBytes("STREAMER#LOAD#" + uri + "%" + stream);
+		}
+		
+		public function playStreamRequest(stream:String):void
+		{
+			trace("-serverConnection : PLAY STREAM " + stream);
+			
+			_socket.connect(_address, 1338);
+			_socket.writeUTFBytes("STREAMER#PLAY#" + stream);
+		}
+		
+		public function pauseStreamRequest(stream:String):void
+		{
+			trace("-serverConnection : PAUSE STREAM " + stream);
+			
+			_socket.connect(_address, 1338);
+			_socket.writeUTFBytes("STREAMER#PAUSE#" + stream);
+		}
+		
+		
+		/*
 		public function signinRequest(login:String, password:String):void
 		{
 			trace("-signinRequest : LOGIN " + login + " PASSWORD " + password);
+			
 			
 			var httpService:HTTPService = new HTTPService();
 			httpService.resultFormat = "text";
@@ -48,7 +134,7 @@ package com.wvibes.wremote.connections
 			httpService.showBusyCursor = true;
 			httpService.requestTimeout = 5;
 			
-			httpService.url = "http://10.18.17.1:9000/login?";
+			httpService.url = _address + "login?";
 			httpService.url += "username=" + login;
 			httpService.url += "&password=" + password;
 			httpService.url += "&serviceName=" + "wvibes";
@@ -64,7 +150,8 @@ package com.wvibes.wremote.connections
 		{
 			trace("-signinRequest : FAILED");
 			
-			dispatchEvent(new Event(SIGNIN_FAILED));
+			//dispatchEvent(new Event(SIGNIN_FAILED));
+			dispatchEvent(new Event(SIGNIN_SUCCED));
 		}
 		
 		protected function httpRequest_resultHandler(event:ResultEvent):void
@@ -74,8 +161,7 @@ package com.wvibes.wremote.connections
 			var result:Object = JSON.parse(event.result.toString());
 			
 			dispatchEvent(new Event(SIGNIN_SUCCED));
-		}
-		
+		}*/
 		
 		public function playingMusicRequest():void
 		{
@@ -86,7 +172,7 @@ package com.wvibes.wremote.connections
 			data.end = 185;
 			data.isPlaying = true;
 			
-			dispatchEvent(new Event(PLAYING_MUSIC_REQUEST_SUCCED));
+			//dispatchEvent(new Event(PLAYING_MUSIC_REQUEST_SUCCED));
 		}
 
 		public function get data():Object
@@ -103,6 +189,5 @@ package com.wvibes.wremote.connections
 		{
 			_data = value;
 		}
-
 	}
 }

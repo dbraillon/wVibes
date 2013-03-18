@@ -35,8 +35,8 @@
 			{
 				trace("-applicationCreationComplete : HIDE LOGIN TAB BAR");
 				
-				//tabbedNavigator.tabBar.dataGroup.getElementAt(0).visible = false;
-				//tabbedNavigator.tabBar.dataGroup.getElementAt(0).includeInLayout = false;
+				tabbedNavigator.tabBar.dataGroup.getElementAt(0).visible = false;
+				tabbedNavigator.tabBar.dataGroup.getElementAt(0).includeInLayout = false;
 			}
 			
 			protected function homeButtonBar_clickHandler(event:Event):void
