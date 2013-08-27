@@ -19,11 +19,9 @@
 		<![CDATA[
 			import mx.events.FlexEvent;
 			
-			import com.wvibes.wremote.views.PlayView;
-			
 			protected function wRemote_preinitializeHandler(event:FlexEvent):void
 			{
-				trace("-applicationPreinitialize : INITIALIZE HOME BUTTON HANDLER");
+				trace("- wRemote.mxml : wRemote_preinitializeHandler : INITIALIZE HOME BUTTON HANDLER");
 				
 				searchNavigator.addEventListener("search_home", homeButtonBar_clickHandler);
 				playlistsNavigator.addEventListener("playlists_home", homeButtonBar_clickHandler);
