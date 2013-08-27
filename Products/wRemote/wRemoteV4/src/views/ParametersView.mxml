@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		title="Parameter">
+	
+	<fx:Script>
+		<![CDATA[
+			import views.parameters.BridgeConnectionView;
+			import views.parameters.ServiceConnectionView;
+			
+			
+			protected function bridgeConnectionButton_clickHandler(event:MouseEvent):void
+			{
+				navigator.pushView(BridgeConnectionView);
+			}
+			
+			protected function spotifyConnectionButton_clickHandler(event:MouseEvent):void
+			{
+				navigator.pushView(ServiceConnectionView);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:VGroup height="100%" width="100%">
+		<s:Button label="Bridge Connection"
+				  click="bridgeConnectionButton_clickHandler(event)" />
+		<s:Button label="Spotify Connection"
+				  click="spotifyConnectionButton_clickHandler(event)" />
+	</s:VGroup>
+	
+</s:View>

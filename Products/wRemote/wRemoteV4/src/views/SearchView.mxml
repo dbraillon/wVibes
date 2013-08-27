@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		creationComplete="view_creationCompleteHandler(event)"
+		removed="view_removedHandler(event)">
+	
+	<s:titleContent>
+		<s:TextInput id="searchInput"
+					 width="100%" />
+	</s:titleContent>
+	
+	<s:actionContent>
+		<s:Button label="S"
+				  click="search_clickHandler(event)" />
+	</s:actionContent>
+	
+	<s:List id="resultList" 
+			height="100%" width="100%"
+			labelField="name"
+			click="resultList_clickHandler(event)" />
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import connections.Command;
+			
+			import events.ApplicationEvent;
+			
+			
+			private var model:Model;
+			
+			protected function view_creationCompleteHandler(event:FlexEvent):void
+			{
+				model = Model.getInstance();
+				model.addEventListener(ApplicationEvent.SEARCH_RESULT, search_resultHandler);
+			}
+			
+			protected function view_removedHandler(event:Event):void
+			{
+				model.removeEventListener(ApplicationEvent.SEARCH_RESULT, search_resultHandler);
+			}
+			
+			
+			protected function search_clickHandler(event:MouseEvent):void
+			{
+				var command:Command = new Command();
+				command.searchCommand(searchInput.text.replace(/\s+/g, '+'));
+				
+				model.connection.addEventListener(ResultEvent.RESULT, search_resultHandler);
+				model.connection.addEventListener(FaultEvent.FAULT, search_faultHandler);
+				model.connection.sendCommand(command);
+			}
+			
+			protected function search_resultHandler(event:ResultEvent):void
+			{
+				model.connection.removeEventListener(ResultEvent.RESULT, search_resultHandler);
+				model.connection.removeEventListener(FaultEvent.FAULT, search_faultHandler);
+				
+				if(event.result)
+				{
+					var result:Object = JSON.parse(event.result as String);
+					
+					resultList.dataProvider = new ArrayCollection(result.tracks);
+				}
+			}
+			
+			protected function search_faultHandler(event:FaultEvent):void
+			{
+				trace(event.fault.message);
+				
+				model.connection.removeEventListener(ResultEvent.RESULT, search_resultHandler);
+				model.connection.removeEventListener(FaultEvent.FAULT, search_faultHandler);
+			}
+			
+			
+			
+			protected function resultList_clickHandler(event:MouseEvent):void
+			{
+				if(resultList.selectedItem)
+				{
+					var command:Command = new Command();
+					command.loadCommand(resultList.selectedItem.href, "stream1");
+					
+					model.connection.addEventListener(ResultEvent.RESULT, load_resultHandler);
+					model.connection.addEventListener(FaultEvent.FAULT, load_faultHandler);
+					model.connection.sendCommand(command);
+				}
+			}
+			
+			protected function load_resultHandler(event:ResultEvent):void
+			{
+				model.connection.removeEventListener(ResultEvent.RESULT, load_resultHandler);
+				model.connection.removeEventListener(FaultEvent.FAULT, load_faultHandler);
+				
+				var result:String = event.result as String;
+				
+				var command:Command = new Command();
+				command.playCommand("stream1");
+				
+				model.connection.addEventListener(ResultEvent.RESULT, play_resultHandler);
+				model.connection.addEventListener(FaultEvent.FAULT, play_faultHandler);
+				model.connection.sendCommand(command);
+			}
+			
+			protected function load_faultHandler(event:FaultEvent):void
+			{
+				trace("- Load Fault");
+				
+				model.connection.removeEventListener(ResultEvent.RESULT, load_resultHandler);
+				model.connection.removeEventListener(FaultEvent.FAULT, load_faultHandler);
+			}
+			
+			protected function play_resultHandler(event:ResultEvent):void
+			{
+				model.connection.removeEventListener(ResultEvent.RESULT, play_resultHandler);
+				model.connection.removeEventListener(FaultEvent.FAULT, play_faultHandler);
+				
+				var result:String = event.result as String;
+			}
+			
+			protected function play_faultHandler(event:FaultEvent):void
+			{
+				model.connection.removeEventListener(ResultEvent.RESULT, play_resultHandler);
+				model.connection.removeEventListener(FaultEvent.FAULT, play_faultHandler);
+			}
+			
+		]]>
+	</fx:Script>
+	
+</s:View>

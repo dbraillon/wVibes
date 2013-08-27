@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			 xmlns:s="library://ns.adobe.com/flex/spark"
+			 xmlns:fb="http://ns.adobe.com/flashbuilder/2009" 
+			 alpha.disabledStates="0.5" blendMode="normal" minHeight="30">
+	
+	<fx:Metadata>
+		[HostComponent("spark.components.TextInput")]
+	</fx:Metadata> 
+	
+	<fx:Script>
+		<![CDATA[
+			import com.dbraillon.pocspotifymobile.constants.ColorsConstant;
+			private static const focusExclusions:Array = ["textDisplay"];
+			override public function get focusSkinExclusions():Array { 
+				return focusExclusions;
+			};
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="disabled" stateGroups="disabledStates"/>
+		<s:State name="normalWithPrompt"/>
+		<s:State name="disabledWithPrompt" stateGroups="disabledStates"/>
+	</s:states>
+	
+	<s:Rect id="border" left="0" right="0" top="0" bottom="0" 
+			radiusX="3" radiusY="3">
+		<s:stroke>     
+			<s:SolidColorStroke id="borderStroke" weight="1" />
+		</s:stroke>
+	</s:Rect>
+	
+	<s:Rect id="background" left="1" right="1" top="1" bottom="1" 
+			radiusX="3" radiusY="3">
+		<s:fill>
+			<s:SolidColor id="bgFill" color="{ColorsConstant.lightGrey}" />
+		</s:fill>
+	</s:Rect>
+	
+	<s:Rect id="shadow" left="1" top="1" right="1" height="1" 
+			radiusX="3" radiusY="3">
+		<s:fill>
+			<s:SolidColor color="{ColorsConstant.black}" alpha="0.12" />
+		</s:fill>
+	</s:Rect> 
+	
+	<s:RichEditableText id="textDisplay" verticalAlign="middle" 
+						widthInChars="10" left="10" right="10" top="10" bottom="7" />
+	
+	<s:Label id="promptDisplay" maxDisplayedLines="1" verticalAlign="middle"
+			 mouseEnabled="false" mouseChildren="false"
+			 includeIn="normalWithPrompt,disabledWithPrompt" 
+			 includeInLayout="true" fontStyle="normal" fontSize="14"
+			 left="10" right="10" top="10" bottom="7"/>
+	
+</s:SparkSkin>

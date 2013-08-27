@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		title="Spotify"
+		preinitialize="view_preinitializeHandler(event)"
+		backgroundColor="{ColorsConstant.darkGrey}" actionBarVisible="false">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.dbraillon.pocspotifymobile.constants.ColorsConstant;
+			import com.dbraillon.pocspotifymobile.models.IconItem;
+			
+			import mx.collections.ArrayList;
+			import mx.events.FlexEvent;
+			
+			[Bindable]
+			private var _listData:ArrayList;
+			
+			protected function view_preinitializeHandler(event:FlexEvent):void
+			{
+				_listData = new ArrayList();
+				
+				var playlistItem:IconItem = new IconItem("SEARCH", "", "", "", false);
+				var playingItem:IconItem =  new IconItem("QUEUE", "", "", "", false);
+				var starredItem:IconItem =  new IconItem("PLAYLISTS", "", "", "", false);
+				var accountItem:IconItem =  new IconItem("WHAT'S NEW", "", "", "", false);
+				var searchItem:IconItem =   new IconItem("SETTINGS", "", "", "", false);
+				
+				_listData.addItem(playlistItem);
+				_listData.addItem(playingItem);
+				_listData.addItem(starredItem);
+				_listData.addItem(accountItem);
+				_listData.addItem(searchItem);
+			}
+			
+			protected function menuList_clickHandler(event:MouseEvent):void
+			{
+				if(menuList.selectedIndex != -1)
+				{
+					var selectedItem:IconItem = event.currentTarget.dataProvider.source[menuList.selectedIndex];
+					
+					switch(selectedItem.label)
+					{
+						case "SEARCH":
+							navigator.pushView(SpotifySearchScreen);
+							break;
+						
+						case "QUEUE":
+							navigator.pushView(SpotifyQueueScreen);
+							break;
+						
+						case "PLAYLISTS":
+							navigator.pushView(SpotifyPlaylistScreen);
+							break;
+						
+						case "WHAT'S NEW":
+							break;
+						
+						case "SETTINGS":
+							navigator.pushView(SpotifyParameterScreen, "fromSpotify");
+							break;
+					}
+				}
+			}
+			
+			protected function returnButton_clickHandler(event:MouseEvent):void
+			{
+				navigator.popView();
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:VGroup width="100%" height="100%">
+		
+		<s:HGroup height="34" width="100%" gap="0">
+			
+			<s:Button id="returnButton" click="returnButton_clickHandler(event)"
+					  skinClass="com.dbraillon.pocspotifymobile.skins.ReturnButtonSkin"/>
+			
+			<s:VGroup height="100%" width="100%" paddingTop="6" paddingLeft="30">
+				
+				<s:Label text="SPOTIFY" fontSize="8" color="{ColorsConstant.mediumGrey}" fontWeight="bold"
+						 width="100%" height="40%"/>
+				
+				<s:Label text="Menu" fontSize="13" color="{ColorsConstant.lightGrey}" fontWeight="bold"
+						 width="100%" height="60%"/>
+				
+			</s:VGroup>
+			
+			<s:Button id="queueButton"
+					  skinClass="com.dbraillon.pocspotifymobile.skins.QueueButtonSkin"/>
+			
+		</s:HGroup>
+		
+		<s:List id="menuList"
+				height="100%" width="100%"
+				itemRenderer="com.dbraillon.pocspotifymobile.renderers.IconItemRenderer"
+				dataProvider="{_listData}"
+				click="menuList_clickHandler(event)"
+				contentBackgroundColor="{ColorsConstant.white}" alternatingItemColors="[0xEEEEEE, 0xE0E0E0]"
+				color="{ColorsConstant.darkGrey}" borderColor="{ColorsConstant.darkGrey}" fontWeight="bold">
+			
+		</s:List>
+		
+	</s:VGroup>
+	
+</s:View>

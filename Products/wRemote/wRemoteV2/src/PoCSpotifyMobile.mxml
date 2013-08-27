@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+								  xmlns:s="library://ns.adobe.com/flex/spark" applicationDPI="160"
+								  firstView="com.dbraillon.pocspotifymobile.screens.HomeScreen"
+								  splashScreenImage="@Embed('assets/wmusic-v1-final.png')"
+								  splashScreenScaleMode="letterbox"
+								  preinitialize="application_preinitializeHandler(event)"
+								  creationComplete="application_creationCompleteHandler(event)"
+								  >
+	
+	<fx:Script>
+		<![CDATA[
+			import com.dbraillon.pocspotifymobile.Log;
+			import com.dbraillon.pocspotifymobile.connections.BridgeConnection;
+			import com.dbraillon.pocspotifymobile.connections.Connection;
+			import com.dbraillon.pocspotifymobile.screens.HomeScreen;
+			import com.dbraillon.pocspotifymobile.screens.ParameterScreen;
+			
+			import mx.events.FlexEvent;
+			
+			import spark.components.Label;
+			import spark.components.supportClasses.ViewNavigatorBase;
+			
+			
+			private var _bridgeConnection:BridgeConnection;
+			
+			// change le texte du label et la visibilité de l'indicateur
+			private function changeActionBar(label:String, busyIndicator:Boolean):void
+			{
+				actionBusyIndicator.visible = busyIndicator;
+				actionLabel.text = label;
+			}
+			
+			
+			/*
+			 * handlers
+			 */
+			
+			protected function application_preinitializeHandler(event:FlexEvent):void
+			{
+				// ajout des écouteurs pour la connexion au bridge
+				addEventListener(BridgeConnection.CONNECTION_ESTABLISHED_EVENT, onConnectionEstablishedHandler);
+				addEventListener(BridgeConnection.CONNECTION_ERROR_EVENT, onConnectionErrorHandler);
+				addEventListener(BridgeConnection.CONNECTION_LOST_EVENT, onConnectionLostHandler);
+				
+				// instanciation de la connexion au bridge
+				_bridgeConnection = new BridgeConnection(this);
+				_bridgeConnection.connect();
+			}
+			
+			protected function backButton_clickHandler(event:MouseEvent):void
+			{
+				if (navigator.length > 1) {
+					
+					navigator.popView();
+				}
+			}
+			
+			protected function onConnectionLostHandler(event:Event):void
+			{
+				changeActionBar("La connexion au bridge est perdu", false);
+				
+				navigator.popToFirstView();
+			}
+			
+			protected function onConnectionErrorHandler(event:Event):void
+			{
+				changeActionBar("La connexion au bridge est perdu", false);
+				
+				navigator.popToFirstView();
+			}
+			
+			protected function onConnectionEstablishedHandler(event:Event):void
+			{
+				changeActionBar("Connecté", false);
+				
+				navigator.pushView(HomeScreen);
+			}
+			
+			protected function application_creationCompleteHandler(event:FlexEvent):void
+			{
+				actionBar.height = 80;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:navigationContent>
+		<s:Button id="backButton" label="Retour" click="backButton_clickHandler(event)" visible="{((navigator.length > 0) ? true : false)}"/>
+	</s:navigationContent>
+	
+	<s:actionContent>
+		<s:BusyIndicator id="actionBusyIndicator"
+						 visible="false"
+						 symbolColor="#f0f0f0"/>
+		<s:Label id="actionLabel"
+				 color="#f0f0f0"
+				 paddingLeft="10"
+				 paddingRight="10"/>
+	</s:actionContent>
+	
+</s:ViewNavigatorApplication>

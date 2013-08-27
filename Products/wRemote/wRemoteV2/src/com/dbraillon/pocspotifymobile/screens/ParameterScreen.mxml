@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" title="ParameterScreen">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.dbraillon.pocspotifymobile.Commands;
+			import com.dbraillon.pocspotifymobile.connections.Connection;
+			
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				var s:Connection = Connection.getInstance();
+				s.connect("10.18.18.134", 1337);
+				s.sendCommand(Commands.PLAY_COMMAND + ":spotify:track:1x6ACsKV4UdWS2FMuPFUiT");
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<s:actionContent>
+		<s:BusyIndicator id="busyIndicator" visible="false" symbolColor="#dadada"/>
+		<s:Spacer width="5"/>
+		<s:Label id="labelIndicator" text="" visible="true" color="#dadada"/>
+		<s:Spacer width="10"/>
+	</s:actionContent>
+	
+	<s:HGroup width="100%">
+		<s:Label text="test raphio"/>
+		<s:Button label="Clic" click="button1_clickHandler(event)"/>
+	</s:HGroup>
+	
+	<s:VGroup height="100%" width="100%">
+		<s:Spacer height="100%" width="100%"/>
+		<s:HGroup width="100%" horizontalAlign="center" paddingBottom="10">
+			<s:Button id="playButton" icon="assets/play_grey_icon.png"/>
+			<s:Button id="pauseButton" icon="assets/pause_grey_icon.png"/>
+			<s:Button id="stopButton" icon="assets/stop_blue_icon.png"/>
+		</s:HGroup>	
+	</s:VGroup>
+	
+</s:View>
