@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+							xmlns:s="library://ns.adobe.com/flex/spark" 
+							applicationDPI="160" 
+							firstView="wvibes.views.configurations.BridgeConnectionView"
+							skinClass="wvibes.skins.ApplicationSkin"
+							preinitialize="application_preinitializeHandler(event)"
+							creationComplete="application_creationCompleteHandler(event)">
+	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		
+		@font-face { 
+			src: url("assets/fonts/OpenSans-Regular.ttf"); 
+			fontFamily: OpenSans-Regular;
+		}
+		
+		@font-face {
+			src: url("assets/fonts/OpenSans-Semibold.ttf"); 
+			fontFamily: OpenSans-SemiBoldFalse;
+			fontWeight: bold;
+			embed-as-cff: false;
+		}
+		
+		@font-face {
+			src: url("assets/fonts/OpenSans-Semibold.ttf"); 
+			fontFamily: OpenSans-SemiBoldTrue;
+			fontWeight: bold;
+			embed-as-cff: true;
+		}
+		
+		s|ViewNavigator {
+			
+			skinClass: ClassReference("wvibes.skins.CustomViewNavigatorSkin")
+		}
+		
+		s|Label {
+			
+			fontFamily: OpenSans-Regular;
+			color: white;
+		}
+		
+		s|Button {
+			
+			fontFamily: OpenSans-SemiBoldFalse;
+			skinClass: ClassReference("spark.skins.spark.ButtonSkin");
+			chromeColor: #0faa0f;
+			focusColor: #0faa0f;
+		}
+		
+		s|Button s|Label {
+			
+			fontFamily: OpenSans-SemiBoldTrue;
+		}
+		
+		s|TextInput {
+			
+			skinClass: ClassReference("spark.skins.spark.TextInputSkin");
+			focusColor: #0faa0f;
+			fontFamily: OpenSans-Regular;
+		}
+		
+		s|TextInput s|Label {
+			
+			color: black;
+		}
+		
+	</fx:Style>
+	
+	<fx:Declarations>
+		
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import wvibes.Model;
+			import wvibes.connections.services.ConnectionEvent;
+			import wvibes.views.configurations.BridgeConnectionView;
+			
+			
+			// Model
+			private var model:Model;
+			
+			protected function application_preinitializeHandler(event:FlexEvent):void
+			{
+				trace("+ Application preinitialize");
+				
+				model = Model.getInstance();
+				model.connection.addEventListener(ConnectionEvent.LOST, connection_lostHandler);
+			}
+			
+			protected function application_creationCompleteHandler(event:FlexEvent):void
+			{
+				trace("+ Application creation complete");
+			}
+			
+			
+			protected function connection_lostHandler(event:ConnectionEvent):void
+			{
+				trace("- Connection with wBridge lost");
+				
+				navigator.pushView(BridgeConnectionView, resourceManager.getString('LocalizedStrings', 'APP_LABEL_CONNECTIONLOST'));
+			}
+			
+		]]>
+	</fx:Script>
+	
+</s:ViewNavigatorApplication>

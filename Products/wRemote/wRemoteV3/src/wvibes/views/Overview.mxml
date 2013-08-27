@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:views="wvibes.views.*"
+		xmlns:menus="com.lmdb.menus.*"
+		backgroundAlpha="0"
+		updateComplete="view_updateCompleteHandler(event)"
+		removing="view_removingHandler(event)">
+	
+	<!-- Action Bar -->
+	<s:actionContent>
+		
+		<s:Button id="playButton"
+				  height="100%" width="50" icon="assets/icons/24/ic_play_24.png"
+				  skinClass="wvibes.skins.ActionBarButtonSkin"
+				  click="playButton_clickHandler(event)" />
+		
+	</s:actionContent>
+	
+	<s:navigationContent>
+		
+		<s:Button id="menuButton" 
+				  height="100%" width="50"
+				  icon="assets/icons/24/ic_menu_24.png"
+				  skinClass="wvibes.skins.ActionBarButtonSkin"
+				  click="showMenu_clickHandler(event)" />
+		
+	</s:navigationContent>
+	
+	
+	<!-- Content -->
+	
+	
+	
+	<!-- Menu -->
+	<menus:SlidingMenu id="slidingMenu">
+		<s:Button id="searchViewButton" label="Search"
+				  height="50" width="100%" skinClass="wvibes.skins.MenuItemSkin"
+				  icon="assets/icons/32/ic_search_32.png"
+				  click="searchViewButton_clickHandler(event)" />
+	</menus:SlidingMenu>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import spark.events.ViewNavigatorEvent;
+			
+			import wvibes.Model;
+			
+			
+			private var model:Model;
+			
+			protected function view_updateCompleteHandler(event:FlexEvent):void
+			{
+				model = Model.getInstance();
+				slidingMenu.init();
+			}
+			
+			protected function view_removingHandler(event:ViewNavigatorEvent):void
+			{
+				
+			}
+			
+			protected function showMenu_clickHandler(event:MouseEvent):void
+			{
+				trace("+ Request menu");
+				
+				slidingMenu.show();
+			}
+			
+			protected function menu_returnHandler(event:Event):void
+			{
+				trace("+ Menu closed");
+			}
+			
+			protected function searchViewButton_clickHandler(event:MouseEvent):void
+			{
+				navigator.pushView(SearchView);
+			}
+			
+			protected function playButton_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+		]]>
+	</fx:Script>
+	
+</s:View>

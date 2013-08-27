@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:views="wvibes.views.*"
+		xmlns:menus="com.lmdb.menus.*"
+		backgroundAlpha="0"
+		creationComplete="view_creationCompleteHandler(event)"
+		removed="view_removedHandler(event)"
+		softKeyboardActivate="view_softKeyboardActivateHandler(event)"
+		softKeyboardDeactivate="view_softKeyboardDeactivateHandler(event)">
+	
+	<s:navigationContent>
+		
+		<s:Button id="menuButton" 
+				  height="100%" width="50" 
+				  icon="assets/icons/24/ic_menu_24.png"
+				  skinClass="wvibes.skins.ActionBarButtonSkin"
+				  click="showMenu_clickHandler(event)" />
+		
+	</s:navigationContent>
+	
+	<s:List id="resultList" height="100%" width="100%"
+			contentBackgroundAlpha="0" labelField="name"
+			click="resultList_clickHandler(event)" />
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import wvibes.Model;
+			import wvibes.connections.workingon.Command;
+			import wvibes.events.ApplicationEvent;
+			import wvibes.events.MenuEvent;
+			import wvibes.skins.CustomViewNavigatorSkin;
+			
+			
+			private var model:Model;
+			
+			protected function view_creationCompleteHandler(event:FlexEvent):void
+			{
+				model = Model.getInstance();
+				model.addEventListener(ApplicationEvent.SEARCH_RESULT, search_resultHandler);
+			}
+			
+			protected function view_removedHandler(event:Event):void
+			{
+				model.removeEventListener(ApplicationEvent.SEARCH_RESULT, search_resultHandler);
+			}
+			
+			protected function search_clickHandler(event:MouseEvent):void
+			{
+				var command:Command = new Command();
+				//command.searchCommand(searchInput.text.replace(/\s+/g, '+'));
+				
+				model.connection.addEventListener(ResultEvent.RESULT, search_resultHandler);
+				model.connection.addEventListener(FaultEvent.FAULT, search_faultHandler);
+				model.connection.sendCommand(command);
+			}
+			
+			protected function search_resultHandler(event:ResultEvent):void
+			{
+				model.connection.removeEventListener(ResultEvent.RESULT, search_resultHandler);
+				model.connection.removeEventListener(FaultEvent.FAULT, search_faultHandler);
+				
+				if(event.result)
+				{
+					var result:Object = JSON.parse(event.result as String);
+					
+					resultList.dataProvider = new ArrayCollection(result.tracks);
+				}
+			}
+			
+			protected function search_faultHandler(event:FaultEvent):void
+			{
+				trace(event.fault.message);
+				
+				model.connection.removeEventListener(ResultEvent.RESULT, search_resultHandler);
+				model.connection.removeEventListener(FaultEvent.FAULT, search_faultHandler);
+			}
+			
+			protected function showMenu_clickHandler(event:MouseEvent):void
+			{
+				trace("+ Request menu");
+			}
+			
+			protected function menu_returnHandler(event:Event):void
+			{
+				trace("+ Menu closed");
+			}
+			
+			protected function menu_searchHandler(event:MenuEvent):void
+			{
+				menu_returnHandler(null);
+				navigator.pushView(SearchView);
+			}
+			
+			protected function menu_playlistsHandler(event:Event):void
+			{
+				menu_returnHandler(null);
+			}
+			
+			protected function menu_parametersHandler(event:Event):void
+			{
+				menu_returnHandler(null);
+			}
+			
+			protected function resultList_clickHandler(event:MouseEvent):void
+			{
+				if(resultList.selectedItem)
+				{
+					var command:Command = new Command();
+					command.loadCommand(resultList.selectedItem.href, "stream1");
+					
+					model.connection.addEventListener(ResultEvent.RESULT, load_resultHandler);
+					model.connection.addEventListener(FaultEvent.FAULT, load_faultHandler);
+					model.connection.sendCommand(command);
+				}
+			}
+			
+			protected function load_resultHandler(event:ResultEvent):void
+			{
+				model.connection.removeEventListener(ResultEvent.RESULT, load_resultHandler);
+				model.connection.removeEventListener(FaultEvent.FAULT, load_faultHandler);
+				
+				var result:String = event.result as String;
+				
+				var command:Command = new Command();
+				command.playCommand("stream1");
+				
+				model.connection.addEventListener(ResultEvent.RESULT, play_resultHandler);
+				model.connection.addEventListener(FaultEvent.FAULT, play_faultHandler);
+				model.connection.sendCommand(command);
+			}
+			
+			protected function load_faultHandler(event:FaultEvent):void
+			{
+				trace("- Load Fault");
+				
+				model.connection.removeEventListener(ResultEvent.RESULT, load_resultHandler);
+				model.connection.removeEventListener(FaultEvent.FAULT, load_faultHandler);
+			}
+			
+			protected function play_resultHandler(event:ResultEvent):void
+			{
+				model.connection.removeEventListener(ResultEvent.RESULT, play_resultHandler);
+				model.connection.removeEventListener(FaultEvent.FAULT, play_faultHandler);
+				
+				var result:String = event.result as String;
+			}
+			
+			protected function play_faultHandler(event:FaultEvent):void
+			{
+				model.connection.removeEventListener(ResultEvent.RESULT, play_resultHandler);
+				model.connection.removeEventListener(FaultEvent.FAULT, play_faultHandler);
+			}
+			
+			protected function view_softKeyboardDeactivateHandler(event:SoftKeyboardEvent):void
+			{
+				var customSkin:CustomViewNavigatorSkin = navigator.skin as CustomViewNavigatorSkin;
+				
+				customSkin.moveBottomActionBar();
+			}
+			
+			protected function searchInput_focusInHandler(event:FocusEvent):void
+			{
+				var customSkin:CustomViewNavigatorSkin = navigator.skin as CustomViewNavigatorSkin;
+				
+				customSkin.moveTopActionBar();
+			}
+			
+			protected function view_softKeyboardActivateHandler(event:SoftKeyboardEvent):void
+			{
+				var customSkin:CustomViewNavigatorSkin = navigator.skin as CustomViewNavigatorSkin;
+				
+				customSkin.moveBottomActionBar();
+			}
+			
+		]]>
+	</fx:Script>
+	
+</s:View>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("spark.components.ActionBar")]
+	</fx:Metadata>
+	
+	<!-- states -->
+	<s:states>
+		<s:State name="titleContentWithActionAndNavigation" />
+		<s:State name="titleContentWithNavigation" />
+		<s:State name="titleContentWithAction" />
+		<s:State name="titleContent" />
+		<s:State name="titleWithActionAndNavigation" />
+		<s:State name="titleWithNavigation" />
+		<s:State name="titleWithAction" />
+		<s:State name="title" />
+	</s:states>
+	
+	<!-- SkinParts
+	name=titleGroup, type=spark.components.Group, required=false
+	name=navigationGroup, type=spark.components.Group, required=false
+	name=actionGroup, type=spark.components.Group, required=false
+	name=titleDisplay, type=spark.core.IDisplayText, required=false
+	-->
+	
+	<s:Rect height="100%" width="100%">
+		<s:fill>
+			<s:SolidColor color="0x101010" />
+		</s:fill>
+	</s:Rect>
+	
+	<s:Line left="0" top="0" width="100%" depth="1">
+		<s:stroke>
+			<s:SolidColorStroke color="0x666666" caps="none" />
+		</s:stroke>
+	</s:Line>
+	
+	<s:Line left="0" bottom="0" width="100%" depth="1">
+		<s:stroke>
+			<s:SolidColorStroke color="0x666666" caps="none" />
+		</s:stroke>
+	</s:Line>
+
+	<s:Group id="navigationGroup" 
+			 height="100%" left="5"
+			 includeIn="titleWithActionAndNavigation, titleWithNavigation, titleContentWithNavigation, titleContentWithActionAndNavigation" />
+	
+	<s:Group id="titleGroup"
+			 height="100%"
+			 horizontalCenter="0" verticalCenter="0" />
+	
+	<s:Group id="actionGroup"
+			 height="100%" right="5"
+			 includeIn="titleContentWithAction, titleContentWithActionAndNavigation, titleWithAction, titleWithActionAndNavigation" />
+
+	<s:Label id="titleDisplay" />
+	
+</s:Skin>
